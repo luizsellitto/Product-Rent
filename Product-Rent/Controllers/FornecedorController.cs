@@ -7,5 +7,6 @@ namespace Product_Rent.Controllers
     [ApiController]
     public class FornecedorController : ControllerBase
     {
+
     }
 }
