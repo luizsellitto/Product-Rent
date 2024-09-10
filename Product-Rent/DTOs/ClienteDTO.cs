@@ -13,7 +13,7 @@ namespace Product_Rent.DTOs
             public string Sexo { get; set; }
             [Required]
             public string RG { get; set; }
-            [Required]
+            public string CNPJ { get; set; }
             public string CPF { get; set; }
             [Required]
             public List<Endereco> Endereco { get; set; }

@@ -9,6 +9,7 @@ namespace Product_Rent.Models
         public string DataNascimento { get; set; }
         public string Sexo { get; set; }
         public string RG { get; set; }
+        public string CNPJ { get; set; }
         public string CPF { get; set; }
         public List<Endereco> Endereco { get; set; }
         public string Telefone { get; set; }
@@ -17,21 +18,16 @@ namespace Product_Rent.Models
 
     public static class ClienteOperacoes
     {
-        private static List<Cliente> clientes = new List<Cliente>(); // Lista estática para armazenar os clientes
+        private static List<Cliente> clientes = new List<Cliente>();
 
         public static IEnumerable<Cliente> Listar()
         {
-            return clientes; // Retorna a lista de clientes
+            return clientes;
         }
 
         public static Cliente GetById(int id)
         {
             return clientes.FirstOrDefault(c => c.Id == id);
-        }
-
-        public static Cliente GetByCPF(string cpf)
-        {
-            return clientes.FirstOrDefault(c => c.CPF == cpf);
         }
 
         public static Cliente Criar(ClienteDTO clienteDto)
@@ -44,6 +40,7 @@ namespace Product_Rent.Models
                 DataNascimento = clienteDto.DataNascimento,
                 Sexo = clienteDto.Sexo,
                 RG = clienteDto.RG,
+                CNPJ = clienteDto.CNPJ,
                 CPF = clienteDto.CPF,
                 Endereco = clienteDto.Endereco,
                 Telefone = clienteDto.Telefone,
@@ -65,6 +62,7 @@ namespace Product_Rent.Models
                 DataNascimento = clienteDto.DataNascimento,
                 Sexo = clienteDto.Sexo,
                 RG = clienteDto.RG,
+                CNPJ = clienteDto.CNPJ,
                 CPF = clienteDto.CPF,
                 Endereco = clienteDto.Endereco,
                 Telefone = clienteDto.Telefone,
@@ -80,7 +78,7 @@ namespace Product_Rent.Models
             var cliente = clientes.FirstOrDefault(c => c.Id == id);
             if (cliente == null) return false;
 
-            clientes.Remove(cliente); // Remove o cliente da lista
+            clientes.Remove(cliente);
             return true;
         }
     }
