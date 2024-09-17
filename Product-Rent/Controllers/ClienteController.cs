@@ -35,20 +35,22 @@ namespace Product_Rent.Controllers
             {
                 return BadRequest("Cliente não pode ser vazio.");
             }
+
             if (clienteDto.CNPJ != "")
-            { if ((ValidarCNPJ.ValidaCnpj(clienteDto.CNPJ) == false))
-            {
-                return BadRequest("CNPJ inválido.");
-            }
+            { 
+                if ((ValidarCNPJ.ValidaCnpj(clienteDto.CNPJ) == false))
+                {
+                    return BadRequest("CNPJ inválido.");
+                }
             }
             
             
             if (clienteDto.CPF != "")
             {
-                        if (ValidarCPF.ValidaCPF(clienteDto.CPF) == false)
-                        {
-                            return BadRequest("CPF inválido.");
-                        }
+                if (ValidarCPF.ValidaCPF(clienteDto.CPF) == false)
+                {
+                    return BadRequest("CPF inválido.");
+                }
             }
             
             if (!(clienteDto.DataNascimento.Length == 10 &&
@@ -83,6 +85,7 @@ namespace Product_Rent.Controllers
             {
                 return BadRequest("Data Escrita Errado.");
             }
+
             if (clienteAtualizado.CNPJ != "")
             {
                 if ((ValidarCNPJ.ValidaCnpj(clienteAtualizado.CNPJ) == false))
