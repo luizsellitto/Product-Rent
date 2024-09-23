@@ -1,6 +1,7 @@
 ﻿using Product_Rent.Models;
 using Product_Rent.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Atividade_ANP_API.Models;
 
 namespace Product_Rent.Controllers
 {
@@ -8,37 +9,17 @@ namespace Product_Rent.Controllers
     [ApiController]
     public class FuncionarioController : ControllerBase
     {
-        List<Funcionario> listFuncionario = new List<Funcionario>();
-
-        public FuncionarioController()
+        [HttpGet("Listar")]
+        public IActionResult Listar()
         {
-            var funcionario1 = new Funcionario()
-            {
-                Id = 1,
-                Nome = "Thiciane Fernanda Frata Borges"
-            };
-
-            var funcionario2 = new Funcionario()
-            {
-                Id = 2,
-                Nome = "Júlio César Aguiar Guedes Pereira"
-            };
-
-            listFuncionario.Add(funcionario1);
-            listFuncionario.Add(funcionario2);
-        }
-
-        [HttpGet]
-        public IActionResult Get()
-        {
-            var Funcionarios = listFuncionario;
+            var Funcionarios = FuncionarioOperacoes.Listar();
             return Ok(Funcionarios);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetById")]
         public IActionResult GetById(int id)
         {
-            var funcionario = listFuncionario.FirstOrDefault(item => item.Id == id);
+            var funcionario = FuncionarioOperacoes.GetById(id);
             if (funcionario == null)
             {
                 return NotFound(new { Mensagem = "O ID fornecido não existe." });
@@ -47,71 +28,60 @@ namespace Product_Rent.Controllers
             return Ok(funcionario);
         }
 
-        [HttpPost]
-        public IActionResult Post([FromBody] FuncionarioDTO item)
+        [HttpPost("Criar")]
+        public IActionResult Criar([FromBody] FuncionarioDTO funcionarioDTO)
         {
-            var contador = listFuncionario.Count;
-            var funcionario = new Funcionario
+            if (funcionarioDTO == null)
             {
-                Id = contador + 1,
-                Nome = item.Nome,
-                Cpf = item.Cpf,
-                Funcao = item.Funcao,
-                Ctps = item.Ctps,
-                Rg = item.Rg,
-                Setor = item.Setor,
-                Sala = item.Sala,
-                Telefone = item.Telefone,
-                Endereco = item.Endereco
-            };
+                return BadRequest("Cliente não pode ser vazio.");
+            }
 
-            //if (!VerificacaoCpf.ValidaCPF(item.Cpf))
-            //{
-            //    return BadRequest(new { Mensagem = "O CPF fornecido é inválido." });
-            //}
-
-            listFuncionario.Add(funcionario);
-            return StatusCode(StatusCodes.Status201Created, funcionario);
+            if (funcionarioDTO.Cpf != "")
+            {
+                if (ValidarCPF.ValidaCPF(funcionarioDTO.Cpf) == false)
+                {
+                    return BadRequest("CPF inválido.");
+                }
+            }
+            var funcionario = FuncionarioOperacoes.Criar(funcionarioDTO);
+            return Ok(funcionario);
         }
 
-        [HttpPut("{id}")]
-        public IActionResult PutById(int id, [FromBody] FuncionarioDTO item)
+        [HttpPut("AtualizarById")]
+        public IActionResult Atualizar(int id, [FromBody] FuncionarioDTO funcionarioDTO)
         {
-            var funcionario = listFuncionario.FirstOrDefault(f => f.Id == id);
+            if (funcionarioDTO == null)
+            {
+                return NotFound(new { Mensagem = "O ID fornecido não existe." });
+            }
+            
+            if (funcionarioDTO.Cpf != "")
+            {
+                if (ValidarCPF.ValidaCPF(funcionarioDTO.Cpf) == false)
+                {
+                    return BadRequest("CPF inválido.");
+                }
+            }
+
+            var funcionario = FuncionarioOperacoes.Atualizar(id, funcionarioDTO);
             if (funcionario == null)
             {
                 return NotFound();
             }
 
-            funcionario.Nome = item.Nome;
-            funcionario.Cpf = item.Cpf;
-            funcionario.Funcao = item.Funcao;
-            funcionario.Ctps = item.Ctps;
-            funcionario.Rg = item.Rg;
-            funcionario.Setor = item.Setor;
-            funcionario.Sala = item.Sala;
-            funcionario.Telefone = item.Telefone;
-            funcionario.Endereco = item.Endereco;
-
-            //if (!VerificacaoCpf.ValidaCPF(item.Cpf))
-            //{
-            //    return BadRequest(new { Mensagem = "O CPF fornecido é inválido." });
-            //}
-
             return Ok(funcionario);
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [HttpDelete("DeletarById")]
+        public IActionResult Deletar(int id)
         {
-            var funcionario = listFuncionario.FirstOrDefault(f => f.Id == id);
-            if (funcionario == null)
+            var verificar = ClienteOperacoes.Deletar(id);
+            if (!verificar)
             {
                 return NotFound(new { Mensagem = "O ID fornecido não existe." });
             }
 
-            listFuncionario.Remove(funcionario);
-            return Ok(funcionario);
+            return NoContent();
         }
     }
 }
