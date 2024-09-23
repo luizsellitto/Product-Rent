@@ -6,8 +6,6 @@ namespace Product_Rent.DTOs
     public class FuncionarioDTO
     {
 
-        public int Id { get; set; }
-
         [Required]
         public string Nome { get; set; }
 
@@ -33,6 +31,6 @@ namespace Product_Rent.DTOs
         public string Telefone { get; set; }
 
         [Required]
-        public List<Endereco> Endereco { get; set; }
+        public Endereco Endereco { get; set; }
     }
 }

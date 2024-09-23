@@ -14,7 +14,7 @@ namespace Product_Rent.Models
         public string Funcao { get; set; }
         public string Setor { get; set; }
         public string Sala { get; set; }
-        public List<Endereco> Endereco { get; set; }
+        public Endereco Endereco { get; set; }
     }
 }
 
@@ -33,43 +33,43 @@ public static class FuncionarioOperacoes
         return funcionarios.FirstOrDefault(c => c.Id == id);
     }
 
-    public static Funcionario Criar(FuncionarioDTO funcionarioDto)
+    public static Funcionario Criar(FuncionarioDTO item)
     {
         var maiorId = funcionarios.Count > 0 ? funcionarios.Max(c => c.Id) : 0;
         var funcionario = new Funcionario
         {
             Id = maiorId + 1,
-            Nome = funcionarioDto.Nome,
-            Cpf = funcionarioDto.Cpf,
-            Funcao = funcionarioDto.Funcao,
-            Ctps = funcionarioDto.Ctps,
-            Rg = funcionarioDto.Rg,
-            Setor = funcionarioDto.Setor,
-            Sala = funcionarioDto.Sala,
-            Telefone = funcionarioDto.Telefone,
-            Endereco = funcionarioDto.Endereco
+            Nome = item.Nome,
+            Cpf = item.Cpf,
+            Funcao = item.Funcao,
+            Ctps = item.Ctps,
+            Rg = item.Rg,
+            Setor = item.Setor,
+            Sala = item.Sala,
+            Telefone = item.Telefone,
+            Endereco = item.Endereco
         };
 
         funcionarios.Add(funcionario);
         return funcionario;
     }
 
-    public static Funcionario Atualizar(int id, FuncionarioDTO funcionarioDto)
+    public static Funcionario Atualizar(int id, FuncionarioDTO item)
     {
         var funcionarioExistente = funcionarios.FirstOrDefault(c => c.Id == id);
         if (funcionarioExistente == null) return null;
         var funcionario = new Funcionario
         {
             Id = id,
-            Nome = funcionarioDto.Nome,
-            Cpf = funcionarioDto.Cpf,
-            Funcao = funcionarioDto.Funcao,
-            Ctps = funcionarioDto.Ctps,
-            Rg = funcionarioDto.Rg,
-            Setor = funcionarioDto.Setor,
-            Sala = funcionarioDto.Sala,
-            Telefone = funcionarioDto.Telefone,
-            Endereco = funcionarioDto.Endereco
+            Nome = item.Nome,
+            Cpf = item.Cpf,
+            Funcao = item.Funcao,
+            Ctps = item.Ctps,
+            Rg = item.Rg,
+            Setor = item.Setor,
+            Sala = item.Sala,
+            Telefone = item.Telefone,
+            Endereco = item.Endereco
         };
         funcionarios.Remove(funcionarioExistente);
         funcionarios.Add(funcionario);
