@@ -37,7 +37,7 @@ namespace Product_Rent.Models
         {
             private static List<Fornecedor> fornecedores = new List<Fornecedor>();
 
-            public static IEnumerable<Fornecedor> Listar()
+            public static IEnumerable<Fornecedor> Get()
             {
                 return fornecedores;
             }
@@ -47,7 +47,7 @@ namespace Product_Rent.Models
                 return fornecedores.FirstOrDefault(c => c.Id == id);
             }
 
-            public static Fornecedor Criar(FornecedorDTO item)
+            public static Fornecedor Create(FornecedorDTO item)
             {
                 var maiorId = fornecedores.Count > 0 ? fornecedores.Max(c => c.Id) : 0;
                 var fornecedor = new Fornecedor
@@ -72,7 +72,7 @@ namespace Product_Rent.Models
                 return fornecedor;
             }
 
-            public static Fornecedor Atualizar(int id, FornecedorDTO item)
+            public static Fornecedor Update(int id, FornecedorDTO item)
             {
                 var fornecedorExistente = fornecedores.FirstOrDefault(c => c.Id == id);
                 if (fornecedorExistente == null) return null;
@@ -97,7 +97,7 @@ namespace Product_Rent.Models
                 return fornecedor;
             }
 
-            public static bool Deletar(int id)
+            public static bool Delete(int id)
             {
                 var fornecedor = fornecedores.FirstOrDefault(c => c.Id == id);
                 if (fornecedor == null) return false;

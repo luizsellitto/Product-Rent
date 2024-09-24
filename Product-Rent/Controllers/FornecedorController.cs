@@ -10,9 +10,9 @@ namespace Product_Rent.Controllers
     public class FornecedorController : ControllerBase
     {
         [HttpGet()]
-        public IActionResult Listar()
+        public IActionResult Get()
         {
-            var fornecedor = FornecedorOperacoes.Listar();
+            var fornecedor = FornecedorOperacoes.Get();
 
             return Ok(fornecedor);
         }
@@ -31,27 +31,27 @@ namespace Product_Rent.Controllers
         }
 
         [HttpPost()]
-        public IActionResult Criar([FromBody] FornecedorDTO item)
+        public IActionResult Create([FromBody] FornecedorDTO item)
         {
             if (item == null)
             {
                 return BadRequest("Produto não pode ser vazio.");
             }
 
-            var fornece = FornecedorOperacoes.Criar(item);
+            var fornece = FornecedorOperacoes.Create(item);
 
             return Ok(fornece);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Atualizar(int id, [FromBody] FornecedorDTO item)
+        public IActionResult Update(int id, [FromBody] FornecedorDTO item)
         {
             if (item == null)
             {
                 return BadRequest("Produto não pode ser vazio.");
             }
 
-            var fornecedor = FornecedorOperacoes.Atualizar(id, item);
+            var fornecedor = FornecedorOperacoes.Update(id, item);
 
             if (fornecedor == null)
             {
@@ -62,9 +62,9 @@ namespace Product_Rent.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Deletar(int id)
+        public IActionResult Delete(int id)
         {
-            var verificar = FornecedorOperacoes.Deletar(id);
+            var verificar = FornecedorOperacoes.Delete(id);
 
             if (!verificar)
             {
