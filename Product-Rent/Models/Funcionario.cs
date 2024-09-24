@@ -23,7 +23,7 @@ public static class FuncionarioOperacoes
 {
     private static List<Funcionario> funcionarios = new List<Funcionario>();
 
-    public static IEnumerable<Funcionario> Listar()
+    public static IEnumerable<Funcionario> Get()
     {
         return funcionarios;
     }
@@ -33,7 +33,7 @@ public static class FuncionarioOperacoes
         return funcionarios.FirstOrDefault(c => c.Id == id);
     }
 
-    public static Funcionario Criar(FuncionarioDTO item)
+    public static Funcionario Create(FuncionarioDTO item)
     {
         var maiorId = funcionarios.Count > 0 ? funcionarios.Max(c => c.Id) : 0;
         var funcionario = new Funcionario
@@ -54,7 +54,7 @@ public static class FuncionarioOperacoes
         return funcionario;
     }
 
-    public static Funcionario Atualizar(int id, FuncionarioDTO item)
+    public static Funcionario Update(int id, FuncionarioDTO item)
     {
         var funcionarioExistente = funcionarios.FirstOrDefault(c => c.Id == id);
         if (funcionarioExistente == null) return null;
@@ -76,7 +76,7 @@ public static class FuncionarioOperacoes
         return funcionario;
     }
 
-    public static bool Deletar(int id)
+    public static bool Delete(int id)
     {
         var funcionario = funcionarios.FirstOrDefault(c => c.Id == id);
         if (funcionario == null) return false;

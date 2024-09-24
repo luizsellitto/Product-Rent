@@ -5,16 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace Product_Rent.Controllers
 {
 
-    [Route("api/[controller]")]
     [ApiController]
-
     [Route("Api/[Controller]")]
     public class FuncionarioController : ControllerBase
     {
         [HttpGet]
-        public IActionResult Listar()
+        public IActionResult Get()
         {
-            var Funcionarios = FuncionarioOperacoes.Listar();
+            var Funcionarios = FuncionarioOperacoes.Get();
             return Ok(Funcionarios);
         }
 
@@ -31,7 +29,7 @@ namespace Product_Rent.Controllers
         }
 
         [HttpPost]
-        public IActionResult Criar([FromBody] FuncionarioDTO item)
+        public IActionResult Create([FromBody] FuncionarioDTO item)
         {
             if (item == null)
             {
@@ -45,12 +43,12 @@ namespace Product_Rent.Controllers
                     return BadRequest("CPF inválido.");
                 }
             }
-            var funcionario = FuncionarioOperacoes.Criar(item);
+            var funcionario = FuncionarioOperacoes.Create(item);
             return Ok(funcionario);
         }
 
         [HttpPut("{Id}")]
-        public IActionResult Atualizar(int id, [FromBody] FuncionarioDTO item)
+        public IActionResult Update(int id, [FromBody] FuncionarioDTO item)
         {
             if (item == null)
             {
@@ -65,7 +63,7 @@ namespace Product_Rent.Controllers
                 }
             }
 
-            var funcionario = FuncionarioOperacoes.Atualizar(id, item);
+            var funcionario = FuncionarioOperacoes.Update(id, item);
             if (funcionario == null)
             {
                 return NotFound();
@@ -75,9 +73,9 @@ namespace Product_Rent.Controllers
         }
 
         [HttpDelete("{Id}")]
-        public IActionResult Deletar(int id)
+        public IActionResult Delete(int id)
         {
-            var verificar = ClienteOperacoes.Deletar(id);
+            var verificar = FuncionarioOperacoes.Delete(id);
             if (!verificar)
             {
                 return NotFound();
