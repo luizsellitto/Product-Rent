@@ -8,14 +8,14 @@ namespace Product_Rent.Controllers
     [Route("api/[controller]")]
     public class ProdutoController : ControllerBase
     {
-        [HttpGet("Listar")]
-        public IActionResult Listar()
+        [HttpGet]
+        public IActionResult Get()
         {
-            var produtos = ProdutoOperacoes.Listar();
+            var produtos = ProdutoOperacoes.Get();
             return Ok(produtos);
         }
 
-        [HttpGet("GetById")]
+        [HttpGet("{Id}")]
         public IActionResult GetById(int id)
         {
             var produto = ProdutoOperacoes.GetById(id);
@@ -26,27 +26,27 @@ namespace Product_Rent.Controllers
             return Ok(produto);
         }
 
-        [HttpPost("Criar")]
-        public IActionResult Criar([FromBody] ProdutoDTO produtoDto)
+        [HttpPost]
+        public IActionResult Create([FromBody] ProdutoDTO produtoDto)
         {
             if (produtoDto == null)
             {
                 return BadRequest("Produto não pode ser vazio.");
             }
 
-            var produto = ProdutoOperacoes.Criar(produtoDto);
+            var produto = ProdutoOperacoes.Create(produtoDto);
             return Ok(produto);
         }
 
-        [HttpPut("AtualizarById")]
-        public IActionResult Atualizar(int id, [FromBody] ProdutoDTO produtoAtualizado)
+        [HttpPut("{Id}")]
+        public IActionResult Update(int id, [FromBody] ProdutoDTO produtoAtualizado)
         {
             if (produtoAtualizado == null)
             {
                 return BadRequest("Produto não pode ser vazio.");
             }
 
-            var produto = ProdutoOperacoes.Atualizar(id, produtoAtualizado);
+            var produto = ProdutoOperacoes.Update(id, produtoAtualizado);
             if (produto == null)
             {
                 return NotFound();
@@ -55,10 +55,10 @@ namespace Product_Rent.Controllers
             return Ok(produto);
         }
 
-        [HttpDelete("DeletarById")]
-        public IActionResult Deletar(int id)
+        [HttpDelete("{Id}")]
+        public IActionResult Delete(int id)
         {
-            var verificar = ProdutoOperacoes.Deletar(id);
+            var verificar = ProdutoOperacoes.Delete(id);
             if (!verificar)
             {
                 return NotFound();

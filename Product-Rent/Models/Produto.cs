@@ -23,7 +23,7 @@ namespace Product_Rent.Models
     {
         private static List<Produto> produtos = new List<Produto>();
 
-        public static IEnumerable<Produto> Listar()
+        public static IEnumerable<Produto> Get()
         {
             return produtos;
         }
@@ -33,7 +33,7 @@ namespace Product_Rent.Models
             return produtos.FirstOrDefault(p => p.Id == id);
         }
 
-        public static Produto Criar(ProdutoDTO produtoDto)
+        public static Produto Create(ProdutoDTO produtoDto)
         {
             var maiorId = produtos.Count > 0 ? produtos.Max(p => p.Id) : 0;
             var produto = new Produto
@@ -51,7 +51,7 @@ namespace Product_Rent.Models
             return produto;
         }
 
-        public static Produto Atualizar(int id, ProdutoDTO produtoDto)
+        public static Produto Update(int id, ProdutoDTO produtoDto)
         {
             var produtoExistente = produtos.FirstOrDefault(p => p.Id == id);
             if (produtoExistente == null) return null;
@@ -72,7 +72,7 @@ namespace Product_Rent.Models
             return produtoAtualizado;
         }
 
-        public static bool Deletar(int id)
+        public static bool Delete(int id)
         {
             var produto = produtos.FirstOrDefault(p => p.Id == id);
             if (produto == null) return false;
