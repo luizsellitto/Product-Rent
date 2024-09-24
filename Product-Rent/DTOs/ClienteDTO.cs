@@ -22,7 +22,7 @@ namespace Product_Rent.DTOs
             public string CPF { get; set; }
 
             [Required]
-            public List<Endereco> Endereco { get; set; }
+            public Endereco Endereco { get; set; }
 
             [Required]
             public string Telefone { get; set; }

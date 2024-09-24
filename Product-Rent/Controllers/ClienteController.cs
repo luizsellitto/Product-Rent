@@ -10,14 +10,14 @@ namespace Product_Rent.Controllers
     [ApiController]
     public class ClienteController : ControllerBase
     {
-        [HttpGet("Listar")]
-        public IActionResult Listar()
+        [HttpGet]
+        public IActionResult Get()
         {
-            var clientes = ClienteOperacoes.Listar();
+            var clientes = ClienteOperacoes.Get();
             return Ok(clientes);
         }
 
-        [HttpGet("GetById")]
+        [HttpGet("{Id}")]
         public IActionResult GetById(int id)
         {
             var cliente = ClienteOperacoes.GetById(id);
@@ -28,8 +28,8 @@ namespace Product_Rent.Controllers
             return Ok(cliente);
         }
 
-        [HttpPost("Criar")]
-        public IActionResult Criar([FromBody] ClienteDTO clienteDto)
+        [HttpPost]
+        public IActionResult Create([FromBody] ClienteDTO clienteDto)
         {
             if (clienteDto == null)
             {
@@ -64,45 +64,45 @@ namespace Product_Rent.Controllers
                 return BadRequest("Data Escrita Errado.");
             }
 
-            var cliente = ClienteOperacoes.Criar(clienteDto);
+            var cliente = ClienteOperacoes.Create(clienteDto);
             return Ok(cliente);
         }
 
-        [HttpPut("AtualizarById")]
-        public IActionResult Atualizar(int id, [FromBody] ClienteDTO clienteAtualizado)
+        [HttpPut("{Id}")]
+        public IActionResult Update(int id, [FromBody] ClienteDTO item)
         {
-            if (clienteAtualizado == null)
+            if (item == null)
             {
                 return BadRequest("Cliente não pode ser vazio.");
             }
-            if (!(clienteAtualizado.DataNascimento.Length == 10 &&
-                char.IsDigit(clienteAtualizado.DataNascimento[0]) && char.IsDigit(clienteAtualizado.DataNascimento[1]) &&
-                clienteAtualizado.DataNascimento[2] == '/' &&
-                char.IsDigit(clienteAtualizado.DataNascimento[3]) && char.IsDigit(clienteAtualizado.DataNascimento[4]) &&
-                clienteAtualizado.DataNascimento[5] == '/' &&
-                char.IsDigit(clienteAtualizado.DataNascimento[6]) && char.IsDigit(clienteAtualizado.DataNascimento[7]) &&
-                char.IsDigit(clienteAtualizado.DataNascimento[8]) && char.IsDigit(clienteAtualizado.DataNascimento[9])))
+            if (!(item.DataNascimento.Length == 10 &&
+                char.IsDigit(item.DataNascimento[0]) && char.IsDigit(item.DataNascimento[1]) &&
+                item.DataNascimento[2] == '/' &&
+                char.IsDigit(item.DataNascimento[3]) && char.IsDigit(item.DataNascimento[4]) &&
+                item.DataNascimento[5] == '/' &&
+                char.IsDigit(item.DataNascimento[6]) && char.IsDigit(item.DataNascimento[7]) &&
+                char.IsDigit(item.DataNascimento[8]) && char.IsDigit(item.DataNascimento[9])))
             {
                 return BadRequest("Data Escrita Errado.");
             }
 
-            if (clienteAtualizado.CNPJ != "")
+            if (item.CNPJ != "")
             {
-                if ((ValidarCNPJ.ValidaCnpj(clienteAtualizado.CNPJ) == false))
+                if ((ValidarCNPJ.ValidaCnpj(item.CNPJ) == false))
                 {
                     return BadRequest("CNPJ inválido.");
                 }
             }
 
-            if (clienteAtualizado.CPF != "")
+            if (item.CPF != "")
             {
-                if (ValidarCPF.ValidaCPF(clienteAtualizado.CPF) == false)
+                if (ValidarCPF.ValidaCPF(item.CPF) == false)
                 {
                     return BadRequest("CPF inválido.");
                 }
             }
 
-            var cliente = ClienteOperacoes.Atualizar(id, clienteAtualizado);
+            var cliente = ClienteOperacoes.Update(id, item);
             if (cliente == null)
             {
                 return NotFound();
@@ -111,10 +111,10 @@ namespace Product_Rent.Controllers
             return Ok(cliente);
         }
 
-        [HttpDelete("DeletarById")]
-        public IActionResult Deletar(int id)
+        [HttpDelete("{Id}")]
+        public IActionResult Delete(int id)
         {
-            var verificar = ClienteOperacoes.Deletar(id);
+            var verificar = ClienteOperacoes.Delete(id);
             if (!verificar)
             {
                 return NotFound();
