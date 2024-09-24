@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Product_Rent.Controllers
 {
+
+    [Route("api/[controller]")]
     [ApiController]
+
     [Route("Api/[Controller]")]
     public class FuncionarioController : ControllerBase
     {

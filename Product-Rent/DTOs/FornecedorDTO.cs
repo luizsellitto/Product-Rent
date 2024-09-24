@@ -5,8 +5,6 @@ namespace Product_Rent.DTOs
 {
     public class FornecedorDTO
     {
-        public int Id { get; set; }
-
         [Required]
         public string CNPJ { get; set; }
 
@@ -26,7 +24,7 @@ namespace Product_Rent.DTOs
         public string Responsavel { get; set; }
 
         [Required]
-        public List<Endereco> Endereco { get; set; }
+        public Endereco Endereco { get; set; }
 
         [Required]
         public string ContatoUm { get; set; }
@@ -36,8 +34,8 @@ namespace Product_Rent.DTOs
         public string ContatoTres { get; set; }
 
         [Required]
-        public Endereco EmailUm { get; set; }
+        public string EmailUm { get; set; }
 
-        public Endereco EmailDois { get; set; }
+        public string EmailDois { get; set; }
     }
 }
