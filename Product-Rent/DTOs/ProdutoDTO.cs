@@ -5,9 +5,6 @@ namespace Product_Rent.DTOs
     public class ProdutoDTO
     {
 
-     
-        public int Id { get; set; }
-
         [Required]
         public string Nome { get; set; }
 

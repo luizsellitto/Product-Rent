@@ -27,26 +27,27 @@ namespace Product_Rent.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] ProdutoDTO produtoDto)
+        public IActionResult Create([FromBody] ProdutoDTO item)
         {
-            if (produtoDto == null)
+            if (item == null)
             {
                 return BadRequest("Produto não pode ser vazio.");
             }
 
-            var produto = ProdutoOperacoes.Create(produtoDto);
+            var produto = ProdutoOperacoes.Create(item);
             return Ok(produto);
         }
 
         [HttpPut("{Id}")]
-        public IActionResult Update(int id, [FromBody] ProdutoDTO produtoAtualizado)
+        public IActionResult Update(int id, [FromBody] ProdutoDTO item)
         {
-            if (produtoAtualizado == null)
+            if (item == null)
             {
                 return BadRequest("Produto não pode ser vazio.");
             }
 
-            var produto = ProdutoOperacoes.Update(id, produtoAtualizado);
+            var produto = ProdutoOperacoes.Update(id, item);
+
             if (produto == null)
             {
                 return NotFound();
