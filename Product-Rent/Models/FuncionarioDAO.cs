@@ -96,5 +96,52 @@ namespace Product_Rent.Models
                 conn.Close() ;
             }
         }
+        public Funcionario GetById(int id)
+        {
+            try
+            {
+                Funcionario funcionario = null;
+                var query = conn.Query();
+                query.CommandText = "CALL select_funcionario_id(@id);";
+                query.Parameters.AddWithValue("@id", id);
+                MySqlDataReader reader = query.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    funcionario = new Funcionario()
+                    {
+                        Id = reader.GetInt32("id"),
+                        Nome = reader.GetString("nome"),
+                        Cpf = reader.GetString("cpf"),
+                        Rg = reader.GetString("rg"),
+                        Telefone = reader.GetString("telefone"),
+                        Email = reader.GetString("email"),
+                        DataNascimento = reader.GetDateTime("data_nascimento"),
+                        Sexo = reader.GetString("sexo"),
+                        Ctps = reader.GetString("ctps"),
+                        Funcao = reader.GetString("funcao"),
+                        Endereco = new Endereco()
+                        {
+                            CEP = reader.GetString("cep"),
+                            Rua = reader.GetString("rua"),
+                            Numero = reader.GetInt32("numero"),
+                            Bairro = reader.GetString("bairro"),
+                            Cidade = reader.GetString("cidade"),
+                            Estado = reader.GetString("estado")
+                        },
+                        Status = reader.GetBoolean("ativo")
+                    };
+                }
+                return funcionario;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
     }
 }
