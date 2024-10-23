@@ -100,5 +100,54 @@ namespace Product_Rent.Models
                 conn.Close();
             }
         }
+        public Fornecedor GetById(int id)
+        {
+            try
+            {
+                var query = conn.Query();
+                query.CommandText = "CALL select_fornecedor_id(@id);";
+                query.Parameters.AddWithValue("@id", id);
+                MySqlDataReader reader = query.ExecuteReader();
+                Fornecedor fornecedor = null;
+                if (reader.Read())
+                {
+                    fornecedor = new Fornecedor()
+                    {
+                        Id = reader.GetInt32("id"),
+                        RazaoSocial = reader.GetString("razao_social"),
+                        NomeFantasia = reader.GetString("nome_fantasia"),
+                        CNPJ = reader.GetString("cnpj"),
+                        InscricaoEstadual = reader.GetString("inscricao_estadual"),
+                        InscricaoMunicipal = reader.GetString("inscricao_municipal"),
+                        Responsavel = reader.GetString("responsavel"),
+                        ContatoUm = reader.GetString("contato_1"),
+                        ContatoDois = reader.GetString("contato_2"),
+                        ContatoTres = reader.GetString("contato_3"),
+                        EmailUm = reader.GetString("email_1"),
+                        EmailDois = reader.GetString("email_2"),
+                        Endereco = new Endereco()
+                        {
+                            CEP = reader.GetString("cep"),
+                            Rua = reader.GetString("rua"),
+                            Numero = reader.GetInt32("numero"),
+                            Bairro = reader.GetString("bairro"),
+                            Cidade = reader.GetString("cidade"),
+                            Estado = reader.GetString("estado"),
+                        },
+                        Status = reader.GetBoolean("ativo")
+                    };
+                }
+                return fornecedor;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro geral: {ex.Message}");
+                throw new Exception("Ocorreu um erro inesperado ao tentar buscar o fornecedor.");
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
     }
 }

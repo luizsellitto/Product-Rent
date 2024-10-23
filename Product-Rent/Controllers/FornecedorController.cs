@@ -48,13 +48,12 @@ namespace Product_Rent.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var fornecedor = FornecedorOperacoes.GetById(id);
+            Fornecedor fornecedor = new FornecedorDAO().GetById(id);
 
             if (fornecedor == null)
             {
                 return NotFound();
             }
-
             return Ok(fornecedor);
         }
 
