@@ -178,7 +178,26 @@ namespace Product_Rent.Models
             }
             catch (Exception)
             {
-                throw new Exception("erro ao atualizar funcionario");
+                throw new Exception("Erro ao atualizar funcionario");
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+        public Funcionario Inative(int id)
+        {
+            try
+            {
+                var query = conn.Query();
+                query.CommandText = "CALL inative_funcionario(@id);";
+                query.Parameters.AddWithValue("@id", id);
+                query.ExecuteNonQuery();
+                return null;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Erro!");
             }
             finally
             {

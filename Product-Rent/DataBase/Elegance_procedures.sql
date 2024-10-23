@@ -183,7 +183,7 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE PROCEDURE delete_funcionario(
+CREATE PROCEDURE inative_funcionario(
 	IN p_id int)
 BEGIN
 	UPDATE funcionario SET ativo = false where (p_id = id);
