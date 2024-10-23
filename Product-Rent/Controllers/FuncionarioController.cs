@@ -58,41 +58,6 @@ namespace Product_Rent.Controllers
         }
         return Created("", funcionario);
         }
-    [HttpPost]
-    public IActionResult Create([FromBody] FuncionarioDTO item)
-    {
-        //if (item.Cpf != "")
-        //{
-        //    if (ValidarCPF.ValidaCPF(item.Cpf) == false)
-        //    {
-        //        return BadRequest("CPF inválido.");
-        //    }
-        //}
-        var funcionario = new Funcionario();
-
-        funcionario.Nome = item.Nome;
-        funcionario.Cpf = item.Cpf;
-        funcionario.Rg = item.Rg;
-        funcionario.Telefone = item.Rg;
-        funcionario.Email = item.Email;
-        funcionario.DataNascimento = item.DataNascimento;
-        funcionario.Sexo = item.Sexo;
-        funcionario.Ctps = item.Ctps;
-        funcionario.Funcao = item.Funcao;
-        funcionario.Endereco = item.Endereco;
-        funcionario.Status = true;
-
-        try
-        {
-            var dao = new FuncionarioDAO();
-            funcionario.Id = dao.Insert(funcionario);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        return Created("", funcionario);
-    }
 
     [HttpPut("{id}")]
     public IActionResult Update(int id, [FromBody] FuncionarioDTO item)
