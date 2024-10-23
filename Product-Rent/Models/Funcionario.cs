@@ -7,14 +7,18 @@ namespace Product_Rent.Models
     {
         public int Id { get; set; }
         public string Nome { get; set; }
+        public DateTime DataNascimento { get; set; }
+        public string Sexo { get; set; }
         public string Cpf { get; set; }
         public string Rg { get; set; }
         public string Telefone { get; set; }
+        public string Email { get; set; }
         public string Ctps { get; set; }
         public string Funcao { get; set; }
         public string Setor { get; set; }
         public string Sala { get; set; }
         public Endereco Endereco { get; set; }
+        public bool Status {  get; set; }
     }
 }
 
