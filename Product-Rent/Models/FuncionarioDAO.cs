@@ -41,9 +41,10 @@ namespace Product_Rent.Models
                 var id = Convert.ToInt32(query.ExecuteScalar());
                 return id;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                Console.WriteLine($"Erro geral: {ex.Message}");
+                throw new Exception("Ocorreu um erro inesperado ao tentar inserir o funcionário.");
             }
             finally
             {
@@ -87,9 +88,10 @@ namespace Product_Rent.Models
                 }
                 return list;
             }
-            catch (Exception) 
+            catch (Exception ex) 
             {
-                throw ;
+                Console.WriteLine($"Erro geral: {ex.Message}");
+                throw new Exception("Ocorreu um erro inesperado ao tentar buscar os funcionários.");
             }
             finally
             {
@@ -134,9 +136,10 @@ namespace Product_Rent.Models
                 }
                 return funcionario;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                Console.WriteLine($"Erro geral: {ex.Message}");
+                throw new Exception("Ocorreu um erro inesperado ao tentar buscar o funcionário.");
             }
             finally
             {
@@ -176,9 +179,10 @@ namespace Product_Rent.Models
                 }
                 return GetById(id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception("Erro ao atualizar funcionario");
+                Console.WriteLine($"Erro geral: {ex.Message}");
+                throw new Exception("Ocorreu um erro inesperado ao tentar atualizar o funcionário.");
             }
             finally
             {
@@ -195,9 +199,10 @@ namespace Product_Rent.Models
                 query.ExecuteNonQuery();
                 return null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception("Erro!");
+                Console.WriteLine($"Erro geral: {ex.Message}");
+                throw new Exception("Ocorreu um erro inesperado ao tentar desativar o funcionário.");
             }
             finally
             {
