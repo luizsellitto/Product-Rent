@@ -16,15 +16,10 @@ namespace Product_Rent.Controllers
             return Ok(funcionarios);
         }
 
-        [HttpGet("{Id}")]
+        [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var funcionario = FuncionarioOperacoes.GetById(id);
-            if (funcionario == null)
-            {
-                return NotFound();
-            }
-
+            Funcionario funcionario = new FuncionarioDAO().GetById(id);
             return Ok(funcionario);
         }
 
