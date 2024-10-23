@@ -10,6 +10,12 @@ namespace Product_Rent.DTOs
         public string Nome { get; set; }
 
         [Required]
+        public DateTime DataNascimento { get; set; }
+
+        [Required]
+        public string Sexo { get; set; }
+
+        [Required]
         public string Cpf { get; set; }
 
         [Required]
@@ -29,6 +35,9 @@ namespace Product_Rent.DTOs
 
         [Required]
         public string Telefone { get; set; }
+
+        [Required]
+        public string Email { get; set; }
 
         [Required]
         public Endereco Endereco { get; set; }
