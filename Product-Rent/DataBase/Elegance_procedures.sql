@@ -1,5 +1,4 @@
 #that archive was made to improve the database organization
-
 use Elegance_Rent;
 
 DELIMITER $$
@@ -12,13 +11,16 @@ CREATE PROCEDURE insert_address(
     IN p_cidade VARCHAR(50),
     IN p_estado VARCHAR(2),
     IN p_tipo_user ENUM('Cliente', 'Funcionário', 'Fornecedor'),
-    IN p_id_fun int
+    IN p_id_cli INT,
+    IN p_id_fun INT,
+    IN p_id_for INT
 )
 BEGIN
-    INSERT INTO Endereco (id, cep, rua, numero, bairro, cidade, estado, tipo_user, id_fun_fk) 
-    VALUES (p_id, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, p_id_fun); 
+    INSERT INTO Endereco (id, cep, rua, numero, bairro, cidade, estado, tipo_user, id_cli_fk, id_fun_fk, id_for_fk) 
+    VALUES (p_id, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, p_id_cli, p_id_fun, p_id_for); 
 END $$ 
 DELIMITER ;
+-- drop procedure insert_address;
 
 DELIMITER $$
 CREATE PROCEDURE insert_client(
@@ -38,7 +40,7 @@ BEGIN
 END $$ 
 DELIMITER ;
 
-
+-- FUNCIONÁRIO --
 DELIMITER $$
 CREATE PROCEDURE insert_funcionario(
     IN p_nome VARCHAR(100),
@@ -60,16 +62,15 @@ CREATE PROCEDURE insert_funcionario(
 
 )
 BEGIN
-	declare id int;
-	
+	DECLARE id INT;
     INSERT INTO Funcionario (nome, data_nascimento, sexo, rg, cpf, telefone, email, ctps, funcao, ativo)
     VALUES (p_nome, p_data_nascimento, p_sexo, p_rg, p_cpf, p_telefone, p_email, p_ctps, p_funcao, true); 
-    if (LAST_INSERT_ID() is null) then
-		set id = 1;
-	else
-		set id = LAST_INSERT_ID();
-     end if;
-    CALL insert_address (NULL, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, id);
+    IF (LAST_INSERT_ID() IS NULL) THEN
+		SET id = 1;
+	ELSE
+		SET id = LAST_INSERT_ID();
+	END IF;
+    CALL insert_address (NULL, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, NULL, id, NULL);
 END $$ 
 DELIMITER ;
 -- DROP PROCEDURE insert_funcionario;
@@ -95,7 +96,6 @@ BEGIN
 	Endereco.cidade,
 	Endereco.estado,
     Funcionario.ativo
-    #Endereco.id_fun_fk
 FROM 
 	Endereco, Funcionario
 	WHERE (Endereco.id_fun_fk = Funcionario.id) 
@@ -155,7 +155,6 @@ CREATE PROCEDURE update_funcionario(
     IN p_estado VARCHAR(2)
 ) 
 BEGIN
-    -- Atualiza os dados do funcionário
     UPDATE Funcionario
     SET
         nome = p_nome,
@@ -168,8 +167,7 @@ BEGIN
         ctps = p_ctps,
         funcao = p_funcao
     WHERE id = p_id;
-
-    -- Atualiza os dados do endereço do funcionário
+    -- endereço
     UPDATE Endereco
     SET
         cep = p_cep,
@@ -189,3 +187,41 @@ BEGIN
 	UPDATE funcionario SET ativo = false where (p_id = id);
 END;
 $$ DELIMITER ;
+
+-- FORNECEDOR --
+DELIMITER $$ 
+CREATE PROCEDURE insert_fornecedor(
+    IN p_razao_social VARCHAR(100),
+    IN p_nome_fantasia VARCHAR(100),
+    IN p_cnpj VARCHAR(18),
+    IN p_inscricao_estadual VARCHAR(20),
+    IN p_inscricao_municipal VARCHAR(20),
+    IN p_responsavel VARCHAR(100),
+    IN p_contato_1 VARCHAR(15),
+    IN p_contato_2 VARCHAR(15),
+    IN p_contato_3 VARCHAR(15),
+    IN p_email_1 VARCHAR(100),
+    IN p_email_2 VARCHAR(100),
+    IN p_cep VARCHAR(10),
+    IN p_rua VARCHAR(100),
+    IN p_numero INT,
+    IN p_bairro VARCHAR(50),
+    IN p_cidade VARCHAR(50),
+    IN p_estado VARCHAR(2),
+    IN p_tipo_user ENUM('Cliente', 'Funcionário', 'Fornecedor')
+)
+BEGIN 
+	DECLARE id INT;
+	
+    INSERT INTO Fornecedor (razao_social, nome_fantasia, cnpj, inscricao_estadual, inscricao_municipal, responsavel, contato_1, contato_2, contato_3, email_1, email_2, ativo)
+    VALUES (p_razao_social, p_nome_fantasia, p_cnpj, p_inscricao_estadual, p_inscricao_municipal, p_responsavel, p_contato_1, p_contato_2, p_contato_3, p_email_1, p_email_2, true); 
+    IF (LAST_INSERT_ID() IS NULL) THEN
+		SET id = 1;
+	ELSE
+		SET id = LAST_INSERT_ID();
+     END IF;
+    CALL insert_address (NULL, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, NULL, NULL, id);
+END $$ 
+DELIMITER ;
+-- DROP PROCEDURE insert_fornecedor;
+

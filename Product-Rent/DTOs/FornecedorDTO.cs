@@ -24,9 +24,6 @@ namespace Product_Rent.DTOs
         public string Responsavel { get; set; }
 
         [Required]
-        public Endereco Endereco { get; set; }
-
-        [Required]
         public string ContatoUm { get; set; }
 
         public string ContatoDois { get; set; }
@@ -37,5 +34,8 @@ namespace Product_Rent.DTOs
         public string EmailUm { get; set; }
 
         public string EmailDois { get; set; }
+        
+        [Required]
+        public Endereco Endereco { get; set; }
     }
 }

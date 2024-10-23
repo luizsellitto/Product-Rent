@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Product_Rent.DTOs;
+using Product_Rent.Models;
 using static Product_Rent.Models.Fornecedor;
 
 namespace Product_Rent.Controllers
@@ -9,12 +10,34 @@ namespace Product_Rent.Controllers
     [Route("api/[controller]")]
     public class FornecedorController : ControllerBase
     {
-        [HttpGet()]
-        public IActionResult Get()
+        [HttpPost]
+        public IActionResult Create([FromBody] FornecedorDTO item)
         {
-            var fornecedor = FornecedorOperacoes.Get();
+            var fornecedor = new Fornecedor();
+            fornecedor.CNPJ = item.CNPJ;
+            fornecedor.RazaoSocial = item.RazaoSocial;
+            fornecedor.NomeFantasia = item.NomeFantasia;
+            fornecedor.InscricaoEstadual = item.InscricaoEstadual;
+            fornecedor.InscricaoMunicipal = item.InscricaoMunicipal;
+            fornecedor.Responsavel = item.Responsavel;
+            fornecedor.ContatoUm = item.ContatoUm;
+            fornecedor.ContatoDois = item.ContatoDois;
+            fornecedor.ContatoTres = item.ContatoTres;
+            fornecedor.EmailUm = item.EmailUm;
+            fornecedor.EmailDois = item.EmailDois;
+            fornecedor.Endereco = item.Endereco;
+            fornecedor.Status = true;
 
-            return Ok(fornecedor);
+            try
+            {
+                var dao = new FornecedorDAO();
+                fornecedor.Id = dao.Insert(fornecedor);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Created("", fornecedor);
         }
 
         [HttpGet("{id}")]
@@ -30,17 +53,10 @@ namespace Product_Rent.Controllers
             return Ok(fornecedor);
         }
 
-        [HttpPost()]
-        public IActionResult Create([FromBody] FornecedorDTO item)
+        [HttpGet]
+        public IActionResult Get()
         {
-            if (item == null)
-            {
-                return BadRequest("Produto não pode ser vazio.");
-            }
-
-            var fornece = FornecedorOperacoes.Create(item);
-
-            return Ok(fornece);
+            return Ok();
         }
 
         [HttpPut("{id}")]

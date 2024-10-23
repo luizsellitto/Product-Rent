@@ -39,9 +39,10 @@ CREATE TABLE Fornecedor (
     contato_2 VARCHAR(15),
     contato_3 VARCHAR(15),
     email_1 VARCHAR(100),
-    email_2 VARCHAR(100)
+    email_2 VARCHAR(100),
+    ativo bool
 );
-
+alter table fornecedor add ativo bool;
 CREATE TABLE Endereco (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     cep VARCHAR(10),
