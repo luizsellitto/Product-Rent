@@ -86,7 +86,7 @@ namespace Product_Rent.Controllers
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        Funcionario funcionario = new FuncionarioDAO().Delete(id);
+        Funcionario funcionario = new FuncionarioDAO().Inative(id);
         return NoContent();
     }
     }
