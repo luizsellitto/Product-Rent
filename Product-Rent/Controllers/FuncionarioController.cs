@@ -12,8 +12,8 @@ namespace Product_Rent.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var Funcionarios = FuncionarioOperacoes.Get();
-            return Ok(Funcionarios);
+            List<Funcionario> funcionarios = new FuncionarioDAO().GetAll();
+            return Ok(funcionarios);
         }
 
         [HttpGet("{Id}")]
