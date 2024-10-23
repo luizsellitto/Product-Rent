@@ -115,18 +115,13 @@ namespace Product_Rent.Controllers
         {
             return NotFound("Funcionário não encontrado ou atualização falhou.");
         }
-        return Ok(update); 
+        return Ok(update);
     }
 
-    [HttpDelete("{Id}")]
+    [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        var verificar = FuncionarioOperacoes.Delete(id);
-        if (!verificar)
-        {
-            return NotFound();
-        }
-
+        Funcionario funcionario = new FuncionarioDAO().Delete(id);
         return NoContent();
     }
     }
