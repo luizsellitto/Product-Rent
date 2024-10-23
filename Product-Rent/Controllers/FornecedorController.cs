@@ -39,7 +39,12 @@ namespace Product_Rent.Controllers
             }
             return Created("", fornecedor);
         }
-
+        [HttpGet]
+        public IActionResult Get()
+        {
+            List<Fornecedor> fornecedores = new FornecedorDAO().GetAll();
+            return Ok(fornecedores);
+        }
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
@@ -51,12 +56,6 @@ namespace Product_Rent.Controllers
             }
 
             return Ok(fornecedor);
-        }
-
-        [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok();
         }
 
         [HttpPut("{id}")]

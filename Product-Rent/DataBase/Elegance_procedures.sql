@@ -224,4 +224,32 @@ BEGIN
 END $$ 
 DELIMITER ;
 -- DROP PROCEDURE insert_fornecedor;
-
+DELIMITER $$
+CREATE PROCEDURE select_fornecedor()
+BEGIN
+    SELECT 
+	Fornecedor.id,
+	Fornecedor.razao_social,
+    Fornecedor.nome_fantasia,
+    Fornecedor.cnpj,
+    Fornecedor.inscricao_estadual,
+    Fornecedor.inscricao_municipal,
+    Fornecedor.responsavel,
+    Fornecedor.contato_1,
+    Fornecedor.contato_2,
+    Fornecedor.contato_3,
+    Fornecedor.email_1, 
+    Fornecedor.email_2,
+	Endereco.cep,
+	Endereco.rua,
+	Endereco.numero,
+	Endereco.bairro,
+	Endereco.cidade,
+	Endereco.estado,
+    Fornecedor.ativo
+FROM 
+	Endereco
+	INNER JOIN Fornecedor ON (Endereco.id_for_fk = Fornecedor.id) 
+	WHERE (ativo = 1);
+END $$ 
+DELIMITER ;

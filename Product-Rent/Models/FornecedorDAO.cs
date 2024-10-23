@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using MySql.Data.MySqlClient;
 using Product_Rent.DataBase;
 
 namespace Product_Rent.Models
@@ -44,6 +45,55 @@ namespace Product_Rent.Models
             {
                 Console.WriteLine($"Erro geral: {ex.Message}");
                 throw new Exception("Ocorreu um erro inesperado ao tentar inserir o fornecedor.");
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+        public List<Fornecedor> GetAll()
+        {
+            try
+            {
+                List<Fornecedor> list = new List<Fornecedor>();
+                var query = conn.Query();
+                query.CommandText = "CALL select_fornecedor();";
+                MySqlDataReader reader = query.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    list.Add(new Fornecedor()
+                    {
+                        Id = reader.GetInt32("id"),
+                        RazaoSocial = reader.GetString("razao_social"),
+                        NomeFantasia = reader.GetString("nome_fantasia"),
+                        CNPJ = reader.GetString("cnpj"),
+                        InscricaoEstadual = reader.GetString("inscricao_estadual"),
+                        InscricaoMunicipal = reader.GetString("inscricao_municipal"),
+                        Responsavel = reader.GetString("responsavel"),
+                        ContatoUm = reader.GetString("contato_1"),
+                        ContatoDois = reader.GetString("contato_2"),
+                        ContatoTres = reader.GetString("contato_3"),
+                        EmailUm = reader.GetString("email_1"),
+                        EmailDois = reader.GetString("email_2"),
+                        Endereco = new Endereco()
+                        {
+                            CEP = reader.GetString("cep"),
+                            Rua = reader.GetString("rua"),
+                            Numero = reader.GetInt32("numero"),
+                            Bairro = reader.GetString("bairro"),
+                            Cidade = reader.GetString("cidade"),
+                            Estado = reader.GetString("estado"),
+                        },
+                        Status = reader.GetBoolean("ativo")
+                    });
+                }
+                return list;
+            }
+            catch (Exception ex) 
+            { 
+                Console.WriteLine($"Erro geral: {ex.Message}");
+                throw new Exception("Ocorreu um erro inesperado ao tentar buscar os fornecedores.");
             }
             finally
             {
