@@ -94,29 +94,28 @@ namespace Product_Rent.Controllers
         return Created("", funcionario);
     }
 
-    [HttpPut("{Id}")]
+    [HttpPut("{id}")]
     public IActionResult Update(int id, [FromBody] FuncionarioDTO item)
     {
         if (item == null)
         {
             return NotFound();
         }
-        
-        if (item.Cpf != "")
-        {
-            if (ValidarCPF.ValidaCPF(item.Cpf) == false)
-            {
-                return BadRequest("CPF inválido.");
-            }
-        }
 
-        var funcionario = FuncionarioOperacoes.Update(id, item);
-        if (funcionario == null)
-        {
-            return NotFound();
-        }
+        //if (item.Cpf != "")
+        //{
+        //    if (ValidarCPF.ValidaCPF(item.Cpf) == false)
+        //    {
+        //        return BadRequest("CPF inválido.");
+        //    }
+        //}
 
-        return Ok(funcionario);
+        Funcionario update = new FuncionarioDAO().Update(id, item);
+        if (update == null)
+        {
+            return NotFound("Funcionário não encontrado ou atualização falhou.");
+        }
+        return Ok(update); 
     }
 
     [HttpDelete("{Id}")]
