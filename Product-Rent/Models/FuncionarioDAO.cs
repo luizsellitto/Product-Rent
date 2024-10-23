@@ -50,5 +50,51 @@ namespace Product_Rent.Models
                 conn.Close();
             }
         }
+        public List<Funcionario> GetAll()
+        {
+            try
+            {
+                List<Funcionario> list = new List<Funcionario>();
+                var query = conn.Query();
+                query.CommandText = "CALL select_funcionario();";
+                MySqlDataReader reader = query.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    list.Add(new Funcionario()
+                    {
+                        Id = reader.GetInt32("id"),
+                        Nome = reader.GetString("nome"),
+                        Cpf = reader.GetString("cpf"),
+                        Rg = reader.GetString("rg"),
+                        Telefone = reader.GetString("telefone"),
+                        Email = reader.GetString("email"),
+                        DataNascimento = reader.GetDateTime("data_nascimento"),
+                        Sexo = reader.GetString("sexo"),
+                        Ctps = reader.GetString("ctps"),
+                        Funcao = reader.GetString("funcao"),
+                        Endereco = new Endereco(){ 
+                            CEP = reader.GetString("cep"),
+                            Rua = reader.GetString("rua"),
+                            Numero = reader.GetInt32("numero"),
+                            Bairro = reader.GetString("bairro"),
+                            Cidade = reader.GetString("cidade"),
+                            Estado = reader.GetString("estado"),
+                        },
+                        Status = reader.GetBoolean("ativo")
+                    });
+
+                }
+                return list;
+            }
+            catch (Exception) 
+            {
+                throw ;
+            }
+            finally
+            {
+                conn.Close() ;
+            }
+        }
     }
 }
