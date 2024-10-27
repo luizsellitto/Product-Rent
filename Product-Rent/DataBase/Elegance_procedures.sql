@@ -343,3 +343,17 @@ BEGIN
 END $$
 DELIMITER ;
 
+-- CAIXA --
+DELIMITER $$
+CREATE PROCEDURE open_caixa(
+    IN p_numero INT,
+    IN p_data DATE,
+    IN p_saldo_inicial DECIMAL(10, 2),
+    IN p_id_fun INT
+)
+BEGIN
+    INSERT INTO Caixa (numero, data, saldo_inicial, saldo_final, total_recebimentos, total_retiradas, id_fun_fk)
+    VALUES (p_numero, p_data, p_saldo_inicial, 0, 0, 0, p_id_fun);
+    SELECT LAST_INSERT_ID();
+END $$
+DELIMITER ;
