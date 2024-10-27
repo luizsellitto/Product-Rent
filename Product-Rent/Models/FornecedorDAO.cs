@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using Product_Rent.DataBase;
 using Product_Rent.DTOs;
@@ -159,7 +160,6 @@ namespace Product_Rent.Models
 
                 query.Parameters.AddWithValue("@id", id);
                 query.Parameters.AddWithValue("@razao_social", item.RazaoSocial);
-                //query.Parameters.AddWithValue("@nome_fantasia", item.NomeFantasia);
                 query.Parameters.AddWithValue("@nome_fantasia", item.NomeFantasia);
                 query.Parameters.AddWithValue("@cnpj", item.CNPJ);
                 query.Parameters.AddWithValue("@inscricao_estadual", item.InscricaoEstadual);
@@ -189,6 +189,27 @@ namespace Product_Rent.Models
             {
                 Console.WriteLine($"Erro geral: {ex.Message}");
                 throw new Exception("Ocorreu um erro inesperado ao tentar atualizar o fornecedor.");
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+        public Fornecedor Inative(int id)
+        {
+            try
+            {
+                var query = conn.Query();
+                query.CommandText = "CALL inative_fornecedor(@id);";
+                query.Parameters.AddWithValue("@id", id);
+
+                query.ExecuteNonQuery();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro geral: {ex.Message}");
+                throw new Exception("Ocorreu um erro inesperado ao tentar desativar o fornecedor.");
             }
             finally
             {

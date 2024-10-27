@@ -76,12 +76,13 @@ namespace Product_Rent.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var verificar = FornecedorOperacoes.Delete(id);
-
-            if (!verificar)
+            Fornecedor fornecedor = new FornecedorDAO().GetById(id);
+            if (fornecedor == null || !fornecedor.Status)
             {
-                return NotFound();
+                return BadRequest("O funcionário está inativo e não pode ser acessado.");
+
             }
+            fornecedor = new FornecedorDAO().Inative(id);
 
             return NoContent();
         }

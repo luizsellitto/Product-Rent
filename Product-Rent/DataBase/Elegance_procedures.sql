@@ -73,7 +73,6 @@ BEGIN
     CALL insert_address (NULL, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, NULL, id, NULL);
 END $$ 
 DELIMITER ;
--- DROP PROCEDURE insert_funcionario;
 
 DELIMITER $$
 CREATE PROCEDURE select_funcionario()
@@ -99,10 +98,9 @@ BEGIN
 FROM 
 	Endereco, Funcionario
 	WHERE (Endereco.id_fun_fk = Funcionario.id) 
-	AND (ativo = 1);
+	AND (funcionario.ativo = TRUE);
 END $$ 
 DELIMITER ;
-
 
 DELIMITER $$
 CREATE PROCEDURE select_funcionario_id(
@@ -131,7 +129,7 @@ FROM
 	Endereco, Funcionario
 	WHERE (Endereco.id_fun_fk = Funcionario.id)
 	AND Funcionario.id = id_fun
-    AND (ativo = 1);
+    AND (funcionario.ativo = TRUE);
 END $$ 
 DELIMITER ;
 
@@ -250,7 +248,7 @@ BEGIN
 FROM 
 	Endereco
 	INNER JOIN Fornecedor ON (Endereco.id_for_fk = Fornecedor.id) 
-	WHERE (ativo = 1);
+	WHERE (Fornecedor.ativo = TRUE);
 END $$ 
 DELIMITER ;
 
@@ -283,10 +281,10 @@ FROM
 	Endereco
 	INNER JOIN Fornecedor ON (Endereco.id_for_fk = Fornecedor.id) 
 	WHERE Fornecedor.id = id_for
-    ANd (ativo = 1);
+    AND (Fornecedor.ativo = TRUE);
 END $$ 
 DELIMITER ;
-
+drop procedure select_funcionario;
 DELIMITER $$
 CREATE PROCEDURE update_fornecedor(
     IN p_id INT,
@@ -335,6 +333,15 @@ BEGIN
     WHERE id_for_fk = p_id;
 END $$
 DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE inative_fornecedor(
+	IN p_id INT
+)
+BEGIN
+	UPDATE Fornecedor SET ativo = FALSE WHERE (id = p_id);
+END $$
+DELIMITER ;
 select * from fornecedor;
-call select_fornecedor;
-CALL update_fornecedor(9, 'thiciane', 'fernanda', 'cnpj', 'frata124', 'borges421', 'thici', 'um', 'dois', 'tres', 'um', 'dois', 'cep', 'rua', 123, 'bairro', 'cty', 'es');
+call select_fornecedor_id(4);
+drop procedure inative_fornecedor;
