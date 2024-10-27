@@ -20,8 +20,8 @@ BEGIN
     VALUES (p_id, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, p_id_cli, p_id_fun, p_id_for); 
 END $$ 
 DELIMITER ;
--- drop procedure insert_address;
 
+-- CLIENTE --
 DELIMITER $$
 CREATE PROCEDURE insert_client(
     IN p_id INT,
@@ -221,7 +221,7 @@ BEGIN
     CALL insert_address (NULL, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, NULL, NULL, id);
 END $$ 
 DELIMITER ;
--- DROP PROCEDURE insert_fornecedor;
+
 DELIMITER $$
 CREATE PROCEDURE select_fornecedor()
 BEGIN
@@ -284,7 +284,7 @@ FROM
     AND (Fornecedor.ativo = TRUE);
 END $$ 
 DELIMITER ;
-drop procedure select_funcionario;
+
 DELIMITER $$
 CREATE PROCEDURE update_fornecedor(
     IN p_id INT,
@@ -342,6 +342,4 @@ BEGIN
 	UPDATE Fornecedor SET ativo = FALSE WHERE (id = p_id);
 END $$
 DELIMITER ;
-select * from fornecedor;
-call select_fornecedor_id(4);
-drop procedure inative_fornecedor;
+
