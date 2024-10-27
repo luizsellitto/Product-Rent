@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MySql.Data.MySqlClient;
 using Product_Rent.DataBase;
+using Product_Rent.DTOs;
 
 namespace Product_Rent.Models
 {
@@ -143,6 +144,51 @@ namespace Product_Rent.Models
             {
                 Console.WriteLine($"Erro geral: {ex.Message}");
                 throw new Exception("Ocorreu um erro inesperado ao tentar buscar o fornecedor.");
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+        public Fornecedor Update(int id, FornecedorDTO item)
+        {
+            try
+            {
+                var query = conn.Query();
+                query.CommandText = "CALL update_fornecedor(@id, @razao_social, @nome_fantasia, @cnpj, @inscricao_estadual, @inscricao_municipal, @responsavel, @contato_1, @contato_2, @contato_3, @email_1, @email_2, @cep, @rua, @numero, @bairro, @cidade, @estado);";
+
+                query.Parameters.AddWithValue("@id", id);
+                query.Parameters.AddWithValue("@razao_social", item.RazaoSocial);
+                //query.Parameters.AddWithValue("@nome_fantasia", item.NomeFantasia);
+                query.Parameters.AddWithValue("@nome_fantasia", item.NomeFantasia);
+                query.Parameters.AddWithValue("@cnpj", item.CNPJ);
+                query.Parameters.AddWithValue("@inscricao_estadual", item.InscricaoEstadual);
+                query.Parameters.AddWithValue("@inscricao_municipal", item.InscricaoMunicipal);
+                query.Parameters.AddWithValue("@responsavel", item.Responsavel);
+                query.Parameters.AddWithValue("@contato_1", item.ContatoUm);
+                query.Parameters.AddWithValue("@contato_2", item.ContatoDois);
+                query.Parameters.AddWithValue("@contato_3", item.ContatoTres);
+                query.Parameters.AddWithValue("@email_1", item.EmailUm);
+                query.Parameters.AddWithValue("@email_2", item.EmailDois);
+                //endereço
+                query.Parameters.AddWithValue("@cep", item.Endereco.CEP);
+                query.Parameters.AddWithValue("@rua", item.Endereco.Rua);
+                query.Parameters.AddWithValue("@numero", item.Endereco.Numero);
+                query.Parameters.AddWithValue("@bairro", item.Endereco.Bairro);
+                query.Parameters.AddWithValue("@cidade", item.Endereco.Cidade);
+                query.Parameters.AddWithValue("@estado", item.Endereco.Estado);
+
+                var result = query.ExecuteNonQuery();
+                if(result < 0)
+                {
+                    throw new Exception("Ocorreu um erro ao atualizar o fornecedor.");
+                }
+                return GetById(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro geral: {ex.Message}");
+                throw new Exception("Ocorreu um erro inesperado ao tentar atualizar o fornecedor.");
             }
             finally
             {

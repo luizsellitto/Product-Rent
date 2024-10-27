@@ -253,6 +253,7 @@ FROM
 	WHERE (ativo = 1);
 END $$ 
 DELIMITER ;
+
 DELIMITER $$
 CREATE PROCEDURE select_fornecedor_id(
 	IN id_for INT
@@ -285,3 +286,55 @@ FROM
     ANd (ativo = 1);
 END $$ 
 DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE update_fornecedor(
+    IN p_id INT,
+	IN p_razao_social VARCHAR(100),
+    IN p_nome_fantasia VARCHAR(100),
+    IN p_cnpj VARCHAR(18),
+    IN p_inscricao_estadual VARCHAR(20),
+    IN p_inscricao_municipal VARCHAR(20),
+    IN p_responsavel VARCHAR(100),
+    IN p_contato_1 VARCHAR(15),
+    IN p_contato_2 VARCHAR(15),
+    IN p_contato_3 VARCHAR(15),
+    IN p_email_1 VARCHAR(100),
+    IN p_email_2 VARCHAR(100),
+    IN p_cep VARCHAR(10),
+    IN p_rua VARCHAR(100),
+    IN p_numero INT,
+    IN p_bairro VARCHAR(50),
+    IN p_cidade VARCHAR(50),
+    IN p_estado VARCHAR(2)
+) 
+BEGIN
+    UPDATE Fornecedor
+    SET
+        razao_social = p_razao_social,
+        nome_fantasia = p_nome_fantasia,
+        cnpj = p_cnpj,
+        inscricao_estadual = p_inscricao_estadual,
+        inscricao_municipal = p_inscricao_municipal,
+        responsavel = p_responsavel,
+        contato_1 = p_contato_1,
+        contato_2 = p_contato_2,
+        contato_3 = p_contato_3,
+        email_1 = p_email_1,
+        email_2 = p_email_2
+    WHERE id = p_id;
+    -- endereço
+    UPDATE Endereco
+    SET
+        cep = p_cep,
+        rua = p_rua,
+        numero = p_numero,
+        bairro = p_bairro,
+        cidade = p_cidade,
+        estado = p_estado
+    WHERE id_for_fk = p_id;
+END $$
+DELIMITER ;
+select * from fornecedor;
+call select_fornecedor;
+CALL update_fornecedor(9, 'thiciane', 'fernanda', 'cnpj', 'frata124', 'borges421', 'thici', 'um', 'dois', 'tres', 'um', 'dois', 'cep', 'rua', 123, 'bairro', 'cty', 'es');

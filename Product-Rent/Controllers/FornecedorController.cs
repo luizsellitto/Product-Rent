@@ -65,14 +65,12 @@ namespace Product_Rent.Controllers
                 return BadRequest("Produto não pode ser vazio.");
             }
 
-            var fornecedor = FornecedorOperacoes.Update(id, item);
-
-            if (fornecedor == null)
+           Fornecedor update = new FornecedorDAO().Update(id, item);
+            if(update == null)
             {
-                return NotFound();
+                return NotFound("Fornecedor não encontrado ou atualização falhou");
             }
-
-            return Ok(fornecedor);
+            return Ok(update);
         }
 
         [HttpDelete("{id}")]
