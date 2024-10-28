@@ -372,6 +372,15 @@ BEGIN
         total_recebimentos = p_total_recebimentos,
         total_retiradas = p_total_retiradas,
         status = p_status
-    WHERE id = p_id AND status = 'Aberto';
+    WHERE (id = p_id) AND (status = 'Aberto');
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE select_caixa_id(
+	IN p_id INT
+)
+BEGIN
+    SELECT * FROM Caixa WHERE (id = p_id);
 END $$
 DELIMITER ;

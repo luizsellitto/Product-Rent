@@ -28,6 +28,23 @@ namespace Product_Rent.Controllers
             }
             return Created("", caixa);
         }
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            try
+            {
+                var caixa = new CaixaDAO().GetById(id);
+                if (caixa == null)
+                {
+                    return NotFound("Caixa não encontrado.");
+                }
+                return Ok(caixa);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpDelete("{id}")]
         public IActionResult Close(int id, [FromBody] CaixaDTO item) //Arrumar: permite fechar caixa já fechado;
         {                                                            //Saldo final, recebimento e retiradas precisam 
@@ -35,13 +52,13 @@ namespace Product_Rent.Controllers
             caixa.SaldoFinal = item.SaldoFinal;
             caixa.TotalRecebimentos = item.TotalRecebimentos;
             caixa.TotalRetiradas = item.TotalRetiradas;
-            if(caixa.Status == "Fechado")   
-            {
-                return BadRequest("Este caixa já está fechado.");
-            }
             try
             {
                 var dao = new CaixaDAO().CloseCaixa(id, caixa);
+                if (dao == null)
+                {
+                    return NotFound("Caixa não encontrado.");
+                }
             }
             catch(Exception ex)
             {

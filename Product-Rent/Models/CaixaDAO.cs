@@ -1,4 +1,5 @@
-﻿using Product_Rent.DataBase;
+﻿using MySql.Data.MySqlClient;
+using Product_Rent.DataBase;
 using Product_Rent.DTOs;
 
 namespace Product_Rent.Models
@@ -63,6 +64,42 @@ namespace Product_Rent.Models
                 conn.Close();
             }
         }
+        public Caixa GetById(int id)
+        {
+            try
+            {
+                var query = conn.Query();
+                query.CommandText = "CALL select_caixa_id(@id);";
+                query.Parameters.AddWithValue("@id", id);
+                MySqlDataReader reader = query.ExecuteReader();
+                Caixa caixa = null;
 
+                if (reader.Read())
+                {
+                    caixa = new Caixa()
+                    {
+                        Id = reader.GetInt32("id"),
+                        Numero = reader.GetInt32("numero"),
+                        Data = reader.GetDateTime("data"),
+                        SaldoInicial = reader.GetDecimal("saldo_inicial"),
+                        SaldoFinal = reader.GetDecimal("saldo_final"),
+                        TotalRecebimentos = reader.GetDecimal("total_recebimentos"),
+                        TotalRetiradas = reader.GetDecimal("total_retiradas"),
+                        FuncionarioId = reader.GetInt32("id_fun_fk")
+                    };
+                }
+
+                return caixa;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro geral: {ex.Message}");
+                throw new Exception("Erro ao buscar o caixa");
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
     }
 }
