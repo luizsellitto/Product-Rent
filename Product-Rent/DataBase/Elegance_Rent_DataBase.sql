@@ -42,7 +42,7 @@ CREATE TABLE Fornecedor (
     email_2 VARCHAR(100),
     ativo bool
 );
-alter table fornecedor add ativo bool;
+# alter table fornecedor add ativo bool;
 CREATE TABLE Endereco (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     cep VARCHAR(10),
@@ -126,6 +126,7 @@ CREATE TABLE Caixa (
     saldo_final DECIMAL(10, 2),
     total_recebimentos DECIMAL(10, 2),
     total_retiradas DECIMAL(10, 2),
+    status ENUM('Aberto', 'Fechado'),
     id_fun_fk INT,
     FOREIGN KEY (id_fun_fk) REFERENCES Funcionario (id)
 );

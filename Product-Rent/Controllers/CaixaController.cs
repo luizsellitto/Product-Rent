@@ -9,7 +9,7 @@ namespace Product_Rent.Controllers
     public class CaixaController : ControllerBase
     {
         [HttpPost]
-        public IActionResult Create([FromBody] CaixaDTO item)
+        public IActionResult Open([FromBody] CaixaDTO item)
         {
             var caixa = new Caixa();
             caixa.Numero = item.Numero;
@@ -28,5 +28,27 @@ namespace Product_Rent.Controllers
             }
             return Created("", caixa);
         }
+        [HttpDelete("{id}")]
+        public IActionResult Close(int id, [FromBody] CaixaDTO item) //Arrumar: permite fechar caixa já fechado;
+        {                                                            //Saldo final, recebimento e retiradas precisam 
+            var caixa = new Caixa();                                 //ser escritas ou será automático do sistema?
+            caixa.SaldoFinal = item.SaldoFinal;
+            caixa.TotalRecebimentos = item.TotalRecebimentos;
+            caixa.TotalRetiradas = item.TotalRetiradas;
+            if(caixa.Status == "Fechado")   
+            {
+                return BadRequest("Este caixa já está fechado.");
+            }
+            try
+            {
+                var dao = new CaixaDAO().CloseCaixa(id, caixa);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return NoContent();
+        }
+
     }
 }

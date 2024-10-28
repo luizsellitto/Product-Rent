@@ -9,6 +9,7 @@
         public decimal SaldoFinal { get; set; }
         public decimal TotalRecebimentos { get; set; }
         public decimal TotalRetiradas { get; set; }
+        public string Status { get; set; }
         public int FuncionarioId { get; set; }
     }
 }

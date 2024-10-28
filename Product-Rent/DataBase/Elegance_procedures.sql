@@ -349,11 +349,29 @@ CREATE PROCEDURE open_caixa(
     IN p_numero INT,
     IN p_data DATE,
     IN p_saldo_inicial DECIMAL(10, 2),
+    IN p_status ENUM('Aberto', 'Fechado'),
     IN p_id_fun INT
 )
 BEGIN
-    INSERT INTO Caixa (numero, data, saldo_inicial, saldo_final, total_recebimentos, total_retiradas, id_fun_fk)
-    VALUES (p_numero, p_data, p_saldo_inicial, 0, 0, 0, p_id_fun);
-    SELECT LAST_INSERT_ID();
+    INSERT INTO Caixa (numero, data, saldo_inicial, saldo_final, total_recebimentos, total_retiradas, status, id_fun_fk)
+    VALUES (p_numero, p_data, p_saldo_inicial, 0, 0, 0, p_status, p_id_fun);
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE close_caixa(
+    IN p_id INT,
+    IN p_saldo_final DECIMAL(10, 2),
+    IN p_total_recebimentos DECIMAL(10, 2),
+    IN p_total_retiradas DECIMAL(10, 2),
+    IN p_status ENUM('Aberto', 'Fechado')
+)
+BEGIN
+    UPDATE Caixa
+    SET saldo_final = p_saldo_final,
+        total_recebimentos = p_total_recebimentos,
+        total_retiradas = p_total_retiradas,
+        status = p_status
+    WHERE id = p_id AND status = 'Aberto';
 END $$
 DELIMITER ;
