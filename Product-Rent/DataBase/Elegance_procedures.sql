@@ -374,6 +374,9 @@ FROM
 END $$ 
 DELIMITER ;
 
+select * from produto;
+
+drop PROCEDURE select_fornecedor;
 DELIMITER $$
 CREATE PROCEDURE select_fornecedor_id(
 	IN id_for INT
@@ -539,17 +542,16 @@ BEGIN
 	produto.valor_aluguel, 	
 	produto.descricao,
     fornecedor.id,
-	fornecedor.nome_fantasia,
-	fornecedor.responsavel
+	fornecedor.nome_fantasia
 FROM 
-	fornecedor, produto
-	WHERE (produto.id_for_fk = fornecedor.id);
+	produto INNER JOIN fornecedor on (produto.id_for_fk = fornecedor.id);
 END $$ 
 DELIMITER ;
 
 call select_produto;
+drop PROCEDURE select_Produto;
 
-
+select * from produto;
 DELIMITER $$
 CREATE PROCEDURE select_produto_id(IN id_pro INT)
 BEGIN
@@ -562,11 +564,9 @@ BEGIN
 	produto.valor_aluguel, 	
 	produto.descricao,
     fornecedor.id,
-	fornecedor.nome_fantasia,
-	fornecedor.responsavel
+	fornecedor.nome_fantasia
 FROM 
-	fornecedor, produto
-	WHERE (produto.id_for_fk = fornecedor.id)
+	produto INNER JOIN fornecedor on (produto.id_for_fk = fornecedor.id)
     AND (produto.id = id_pro);
 END $$ 
 DELIMITER ;
@@ -600,5 +600,14 @@ END $$
 DELIMITER ;
 
 call update_produto(1, 'casa', 'gucci', 'G', 'vermelho', 960.30, 'tanto faz', 1);
-select * from produto;
+
+DELIMITER $$
+CREATE PROCEDURE inative_produto(
+	IN p_id INT
+)
+BEGIN
+	UPDATE produto SET status = FALSE WHERE (id = p_id);
+END $$
+DELIMITER ;
+
 

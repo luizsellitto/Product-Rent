@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Atividade_ANP_API.Models;
+using Microsoft.AspNetCore.Mvc;
 using Product_Rent.DTOs;
 using Product_Rent.Models;
 
@@ -8,46 +9,59 @@ namespace Product_Rent.Controllers
     [Route("api/[controller]")]
     public class ProdutoController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult Get()
-        {
-            var produtos = ProdutoOperacoes.Get();
-            return Ok(produtos);
-        }
-
-        [HttpGet("{Id}")]
-        public IActionResult GetById(int id)
-        {
-            var produto = ProdutoOperacoes.GetById(id);
-            if (produto == null)
-            {
-                return NotFound();
-            }
-            return Ok(produto);
-        }
-
         [HttpPost]
         public IActionResult Create([FromBody] ProdutoDTO item)
         {
             if (item == null)
             {
-                return BadRequest("Produto não pode ser vazio.");
+                return BadRequest("produto não pode ser vazio.");
             }
 
-            var produto = ProdutoOperacoes.Create(item);
+            var produto = new ProdutoDAO().Insert(item);
             return Ok(produto);
         }
 
-        [HttpPut("{Id}")]
+        [HttpGet]
+        public IActionResult Get()
+        {
+            try
+            {
+                var produto = new ProdutoDAO().GetAll();
+                return Ok(produto);
+            }
+            catch(Exception ex)
+            {
+                //Console.WriteLine(ex);
+                return BadRequest(ex.Message);
+
+            }
+
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            var produto = new ProdutoDAO().GetById(id);
+            if (produto == null)
+            {
+                return NotFound();
+            }
+            return Ok(produto);
+        }
+
+        
+
+        [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] ProdutoDTO item)
         {
             if (item == null)
             {
-                return BadRequest("Produto não pode ser vazio.");
+                return BadRequest("produto não pode ser vazio.");
             }
 
-            var produto = ProdutoOperacoes.Update(id, item);
+           
 
+            var produto = new ProdutoDAO().Update(id, item);
             if (produto == null)
             {
                 return NotFound();
@@ -56,16 +70,19 @@ namespace Product_Rent.Controllers
             return Ok(produto);
         }
 
-        [HttpDelete("{Id}")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var verificar = ProdutoOperacoes.Delete(id);
-            if (!verificar)
+            try
             {
-                return NotFound();
-            }
+                new ProdutoDAO().Inative(id);
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }

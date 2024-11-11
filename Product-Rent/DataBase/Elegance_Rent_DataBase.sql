@@ -169,3 +169,6 @@ CREATE TABLE Pagamento (
     FOREIGN KEY (id_des_fk) REFERENCES Despesa (id),
     FOREIGN KEY (id_comp_fk) REFERENCES Compra (id)
 );
+
+select * from fornecedor;
+insert into fornecedor (nome_fantasia) values ('pedro');
