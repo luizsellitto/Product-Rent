@@ -112,6 +112,7 @@ namespace Product_Rent.Models
 
                 if (reader.Read())
                 {
+
                     cliente = new Cliente()
                     {
                         Id = reader.GetInt32("id"),
@@ -130,9 +131,9 @@ namespace Product_Rent.Models
                             Numero = reader.GetInt32("numero"),
                             Bairro = reader.GetString("bairro"),
                             Cidade = reader.GetString("cidade"),
-                            Estado = reader.GetString("estado")
+                            Estado = reader.GetString("estado"),
                         },
-                        Status = reader.GetBoolean("ativo")
+                        Status = reader.GetBoolean("status")
                     };
                 }
                 return cliente;
