@@ -506,3 +506,99 @@ BEGIN
     SELECT * FROM Caixa WHERE (id = p_id);
 END $$
 DELIMITER ;
+
+-- PRODUTO --
+DELIMITER $$
+CREATE PROCEDURE insert_produto(
+    IN p_nome VARCHAR(100),
+    IN p_marca VARCHAR(100),
+    IN p_tamanho VARCHAR(10),
+    IN p_cor VARCHAR(50),
+    IN p_valor_aluguel DECIMAL(10, 2), 	
+    IN p_descricao VARCHAR(500),
+    IN p_id_for INT
+)
+
+BEGIN
+    INSERT INTO Produto (nome, marca, tamanho, cor, valor_aluguel, descricao, id_for_fk)
+    VALUES (p_nome, p_marca, p_tamanho, p_cor, p_valor_aluguel, p_descricao, p_id_for); 
+END $$ 
+DELIMITER ;
+	call insert_produto('produto', 'gucci', 'G', 'vermelho', 960.30, 'tanto faz', 1);
+
+
+DELIMITER $$
+CREATE PROCEDURE select_Produto()
+BEGIN
+    SELECT 
+	produto.id,
+	produto.nome,
+	produto.marca,
+	produto.tamanho,
+	produto.cor,
+	produto.valor_aluguel, 	
+	produto.descricao,
+    fornecedor.id,
+	fornecedor.nome_fantasia,
+	fornecedor.responsavel
+FROM 
+	fornecedor, produto
+	WHERE (produto.id_for_fk = fornecedor.id);
+END $$ 
+DELIMITER ;
+
+call select_produto;
+
+
+DELIMITER $$
+CREATE PROCEDURE select_produto_id(IN id_pro INT)
+BEGIN
+    SELECT 
+	produto.id,
+	produto.nome,
+	produto.marca,
+	produto.tamanho,
+	produto.cor,
+	produto.valor_aluguel, 	
+	produto.descricao,
+    fornecedor.id,
+	fornecedor.nome_fantasia,
+	fornecedor.responsavel
+FROM 
+	fornecedor, produto
+	WHERE (produto.id_for_fk = fornecedor.id)
+    AND (produto.id = id_pro);
+END $$ 
+DELIMITER ;
+call select_produto_id(1);
+
+
+DELIMITER $$
+CREATE PROCEDURE update_produto(
+    IN p_id INT,
+    IN p_nome VARCHAR(100),
+    IN p_marca VARCHAR(100),
+    IN p_tamanho VARCHAR(10),
+    IN p_cor VARCHAR(50),
+    IN p_valor_aluguel DECIMAL(10, 2), 	
+    IN p_descricao VARCHAR(500),
+    IN p_id_for INT
+) 
+
+BEGIN
+    UPDATE produto
+    SET
+        nome = p_nome,
+        marca = p_marca,
+        tamanho = p_tamanho,
+        cor = p_cor,
+        valor_aluguel = p_valor_aluguel,
+        descricao = p_descricao
+    WHERE id = p_id;
+   
+END $$
+DELIMITER ;
+
+call update_produto(1, 'casa', 'gucci', 'G', 'vermelho', 960.30, 'tanto faz', 1);
+select * from produto;
+
