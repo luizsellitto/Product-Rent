@@ -113,6 +113,7 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE PROCEDURE update_cliente(
+	IN p_id int,
     IN p_nome VARCHAR(100),
     IN p_data_nascimento DATE,
     IN p_sexo VARCHAR(10),

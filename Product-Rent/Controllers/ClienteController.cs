@@ -10,24 +10,6 @@ namespace Product_Rent.Controllers
     [ApiController]
     public class ClienteController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult Get()
-        {
-            var clientes = new ClienteDAO().GetAll();
-            return Ok(clientes);
-        }
-
-        [HttpGet("{Id}")]
-        public IActionResult GetById(int id)
-        {
-            var cliente = new ClienteDAO().GetById(id);
-            if (cliente == null)
-            {
-                return NotFound();
-            }
-            return Ok(cliente);
-        }
-
         [HttpPost]
         public IActionResult Create([FromBody] ClienteDTO clienteDto)
         {
@@ -37,14 +19,14 @@ namespace Product_Rent.Controllers
             }
 
             if (clienteDto.CNPJ != "")
-            { 
+            {
                 if ((ValidarCNPJ.ValidaCnpj(clienteDto.CNPJ) == false))
                 {
                     return BadRequest("CNPJ inválido.");
                 }
             }
-            
-            
+
+
             if (clienteDto.CPF != "")
             {
                 if (ValidarCPF.ValidaCPF(clienteDto.CPF) == false)
@@ -57,40 +39,72 @@ namespace Product_Rent.Controllers
             return Ok(cliente);
         }
 
-        [HttpPut("{Id}")]
-        public IActionResult Update(int id, [FromBody] ClienteDTO item)
+        [HttpGet]
+        public IActionResult Get()
         {
-            if (item == null)
+            try
             {
-                return BadRequest("Cliente não pode ser vazio.");
+                var clientes = new ClienteDAO().GetAll();
+                return Ok(clientes);
             }
-
-            if (item.CNPJ != "")
+            catch (Exception ex)
             {
-                if ((ValidarCNPJ.ValidaCnpj(item.CNPJ) == false))
-                {
-                    return BadRequest("CNPJ inválido.");
-                }
+                return Problem(ex.Message);
             }
+        }
 
-            if (item.CPF != "")
-            {
-                if (ValidarCPF.ValidaCPF(item.CPF) == false)
-                {
-                    return BadRequest("CPF inválido.");
-                }
-            }
-
-            var cliente = new ClienteDAO().Update(id, item);
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            var cliente = new ClienteDAO().GetById(id);
             if (cliente == null)
             {
                 return NotFound();
             }
-
             return Ok(cliente);
         }
 
-        [HttpDelete("{Id}")]
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, [FromBody] ClienteDTO item)
+        {
+            try
+            {
+                if (item == null)
+                {
+                    return BadRequest("Cliente não pode ser vazio.");
+                }
+
+                if (item.CNPJ != "")
+                {
+                    if ((ValidarCNPJ.ValidaCnpj(item.CNPJ) == false))
+                    {
+                        return BadRequest("CNPJ inválido.");
+                    }
+                }
+
+                if (item.CPF != "")
+                {
+                    if (ValidarCPF.ValidaCPF(item.CPF) == false)
+                    {
+                        return BadRequest("CPF inválido.");
+                    }
+                }
+
+                var cliente = new ClienteDAO().Update(id, item);
+                if (cliente == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(cliente);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             new ClienteDAO().Inative(id);
