@@ -13,14 +13,14 @@ namespace Product_Rent.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var clientes = ClienteDAO.GetAll();
+            var clientes = new ClienteDAO().GetAll();
             return Ok(clientes);
         }
 
         [HttpGet("{Id}")]
         public IActionResult GetById(int id)
         {
-            var cliente = ClienteDAO.GetById(id);
+            var cliente = new ClienteDAO().GetById(id);
             if (cliente == null)
             {
                 return NotFound();
@@ -52,19 +52,8 @@ namespace Product_Rent.Controllers
                     return BadRequest("CPF inválido.");
                 }
             }
-            
-            if (!(clienteDto.DataNascimento.Length == 10 &&
-                char.IsDigit(clienteDto.DataNascimento[0]) && char.IsDigit(clienteDto.DataNascimento[1]) &&
-                clienteDto.DataNascimento[2] == '/' &&
-                char.IsDigit(clienteDto.DataNascimento[3]) && char.IsDigit(clienteDto.DataNascimento[4]) &&
-                clienteDto.DataNascimento[5] == '/' &&
-                char.IsDigit(clienteDto.DataNascimento[6]) && char.IsDigit(clienteDto.DataNascimento[7]) &&
-                char.IsDigit(clienteDto.DataNascimento[8]) && char.IsDigit(clienteDto.DataNascimento[9])))
-            {
-                return BadRequest("Data Escrita Errado.");
-            }
 
-            var cliente = ClienteDAO.Create(clienteDto);
+            var cliente = new ClienteDAO().Insert(clienteDto);
             return Ok(cliente);
         }
 
@@ -74,16 +63,6 @@ namespace Product_Rent.Controllers
             if (item == null)
             {
                 return BadRequest("Cliente não pode ser vazio.");
-            }
-            if (!(item.DataNascimento.Length == 10 &&
-                char.IsDigit(item.DataNascimento[0]) && char.IsDigit(item.DataNascimento[1]) &&
-                item.DataNascimento[2] == '/' &&
-                char.IsDigit(item.DataNascimento[3]) && char.IsDigit(item.DataNascimento[4]) &&
-                item.DataNascimento[5] == '/' &&
-                char.IsDigit(item.DataNascimento[6]) && char.IsDigit(item.DataNascimento[7]) &&
-                char.IsDigit(item.DataNascimento[8]) && char.IsDigit(item.DataNascimento[9])))
-            {
-                return BadRequest("Data Escrita Errado.");
             }
 
             if (item.CNPJ != "")
@@ -102,7 +81,7 @@ namespace Product_Rent.Controllers
                 }
             }
 
-            var cliente = ClienteDAO.Update(id, item);
+            var cliente = new ClienteDAO().Update(id, item);
             if (cliente == null)
             {
                 return NotFound();
@@ -114,11 +93,7 @@ namespace Product_Rent.Controllers
         [HttpDelete("{Id}")]
         public IActionResult Delete(int id)
         {
-            var verificar = ClienteDAO.Delete(id);
-            if (!verificar)
-            {
-                return NotFound();
-            }
+            new ClienteDAO().Inative(id);
 
             return NoContent();
         }

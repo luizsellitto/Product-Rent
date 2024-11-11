@@ -14,7 +14,7 @@ namespace Product_Rent.Models
             conn = new ConnectionMysql();
         }
 
-        public int Insert(Cliente item)
+        public int Insert(ClienteDTO item)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace Product_Rent.Models
                 query.Parameters.AddWithValue("@bairro", item.Endereco.Bairro);
                 query.Parameters.AddWithValue("@cidade", item.Endereco.Cidade);
                 query.Parameters.AddWithValue("@estado", item.Endereco.Estado);
-                query.Parameters.AddWithValue("Funcionário", item.Endereco.Tipo);
+                query.Parameters.AddWithValue("Cliente", item.Endereco.Tipo);
 
 
                 var id = Convert.ToInt32(query.ExecuteScalar());
@@ -92,7 +92,7 @@ namespace Product_Rent.Models
             catch (Exception ex)
             {
                 Console.WriteLine($"Erro geral: {ex.Message}");
-                throw new Exception("Ocorreu um erro inesperado ao tentar buscar os funcionários.");
+                throw new Exception("Ocorreu um erro inesperado ao tentar buscar os clientes.");
             }
             finally
             {
@@ -100,6 +100,114 @@ namespace Product_Rent.Models
             }
         }
 
-        
+        public Cliente GetById(int id)
+        {
+            try
+            {
+                Cliente cliente = null;
+                var query = conn.Query();
+                query.CommandText = "CALL select_cliente_id(@id);";
+                query.Parameters.AddWithValue("@id", id);
+                MySqlDataReader reader = query.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    cliente = new Cliente()
+                    {
+                        Id = reader.GetInt32("id"),
+                        Nome = reader.GetString("nome"),
+                        CPF = reader.GetString("cpf"),
+                        CNPJ = reader.GetString("cnpj"),
+                        RG = reader.GetString("rg"),
+                        Telefone = reader.GetString("telefone"),
+                        Email = reader.GetString("email"),
+                        DataNascimento = reader.GetDateTime("data_nascimento"),
+                        Sexo = reader.GetString("sexo"),
+                        Endereco = new Endereco()
+                        {
+                            CEP = reader.GetString("cep"),
+                            Rua = reader.GetString("rua"),
+                            Numero = reader.GetInt32("numero"),
+                            Bairro = reader.GetString("bairro"),
+                            Cidade = reader.GetString("cidade"),
+                            Estado = reader.GetString("estado")
+                        },
+                        Status = reader.GetBoolean("ativo")
+                    };
+                }
+                return cliente;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro geral: {ex.Message}");
+                throw new Exception("Ocorreu um erro inesperado ao tentar buscar o cliente.");
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+        public Cliente Update(int id, ClienteDTO item)
+        {
+            try
+            {
+                var query = conn.Query();
+                query.CommandText = "CALL update_cliente(@id, @nome, @data_nascimento, @sexo, @rg, @cnpj, @cpf, @telefone, @email, @cep, @rua, @numero, @bairro, @cidade, @estado); ";
+
+                query.Parameters.AddWithValue("@id", id);
+                query.Parameters.AddWithValue("@nome", item.Nome);
+                query.Parameters.AddWithValue("@data_nascimento", item.DataNascimento.ToString("yyyy-MM-dd HH:mm:ss"));
+                query.Parameters.AddWithValue("@sexo", item.Sexo);
+                query.Parameters.AddWithValue("@rg", item.RG);
+                query.Parameters.AddWithValue("cnpj", item.CNPJ);
+                query.Parameters.AddWithValue("@cpf", item.CPF);
+                query.Parameters.AddWithValue("@telefone", item.Telefone);
+                query.Parameters.AddWithValue("@email", item.Email);
+                //endereço
+                query.Parameters.AddWithValue("@cep", item.Endereco.CEP);
+                query.Parameters.AddWithValue("@rua", item.Endereco.Rua);
+                query.Parameters.AddWithValue("@numero", item.Endereco.Numero);
+                query.Parameters.AddWithValue("@bairro", item.Endereco.Bairro);
+                query.Parameters.AddWithValue("@cidade", item.Endereco.Cidade);
+                query.Parameters.AddWithValue("@estado", item.Endereco.Estado);
+
+                var result = query.ExecuteNonQuery();
+
+                if (result < 0)
+                {
+                    throw new Exception("Ocorreu um erro ao atualizar o cliente.");
+                }
+                return GetById(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro geral: {ex.Message}");
+                throw new Exception("Ocorreu um erro inesperado ao tentar atualizar o cliente.");
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+        public void Inative(int id)
+        {
+            try
+            {
+                var query = conn.Query();
+                query.CommandText = "CALL inative_cliente(@id);";
+                query.Parameters.AddWithValue("@id", id);
+                query.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro geral: {ex.Message}");
+                throw new Exception("Ocorreu um erro inesperado ao tentar desativar o cliente.");
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
     }
 }

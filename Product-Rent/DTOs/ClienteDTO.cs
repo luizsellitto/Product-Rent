@@ -9,7 +9,7 @@ namespace Product_Rent.DTOs
             public string Nome { get; set; }
 
             [Required]
-            public string DataNascimento { get; set; }
+            public DateTime DataNascimento { get; set; }
 
             [Required]
             public string Sexo { get; set; }
