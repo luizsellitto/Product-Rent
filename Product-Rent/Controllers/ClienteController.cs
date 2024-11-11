@@ -13,14 +13,14 @@ namespace Product_Rent.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var clientes = ClienteOperacoes.Get();
+            var clientes = ClienteDAO.GetAll();
             return Ok(clientes);
         }
 
         [HttpGet("{Id}")]
         public IActionResult GetById(int id)
         {
-            var cliente = ClienteOperacoes.GetById(id);
+            var cliente = ClienteDAO.GetById(id);
             if (cliente == null)
             {
                 return NotFound();
@@ -64,7 +64,7 @@ namespace Product_Rent.Controllers
                 return BadRequest("Data Escrita Errado.");
             }
 
-            var cliente = ClienteOperacoes.Create(clienteDto);
+            var cliente = ClienteDAO.Create(clienteDto);
             return Ok(cliente);
         }
 
@@ -102,7 +102,7 @@ namespace Product_Rent.Controllers
                 }
             }
 
-            var cliente = ClienteOperacoes.Update(id, item);
+            var cliente = ClienteDAO.Update(id, item);
             if (cliente == null)
             {
                 return NotFound();
@@ -114,7 +114,7 @@ namespace Product_Rent.Controllers
         [HttpDelete("{Id}")]
         public IActionResult Delete(int id)
         {
-            var verificar = ClienteOperacoes.Delete(id);
+            var verificar = ClienteDAO.Delete(id);
             if (!verificar)
             {
                 return NotFound();

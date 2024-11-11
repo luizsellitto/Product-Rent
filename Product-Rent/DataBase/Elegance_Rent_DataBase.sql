@@ -10,7 +10,8 @@ CREATE TABLE Cliente (
     cpf VARCHAR(14),
     cnpj VARCHAR(18),
     telefone VARCHAR(15),
-    email VARCHAR(100)
+    email VARCHAR(100),
+    status bool
 );
 
 CREATE TABLE Funcionario (
@@ -24,7 +25,7 @@ CREATE TABLE Funcionario (
     funcao VARCHAR(50),
     telefone VARCHAR(15),
     email VARCHAR(100),
-    ativo bool
+    status bool
 );
 
 CREATE TABLE Fornecedor (
@@ -40,9 +41,9 @@ CREATE TABLE Fornecedor (
     contato_3 VARCHAR(15),
     email_1 VARCHAR(100),
     email_2 VARCHAR(100),
-    ativo bool
+    status bool
 );
-# alter table fornecedor add ativo bool;
+# alter table fornecedor add status bool;
 CREATE TABLE Endereco (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     cep VARCHAR(10),

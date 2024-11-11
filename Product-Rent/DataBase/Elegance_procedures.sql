@@ -21,26 +21,148 @@ BEGIN
 END $$ 
 DELIMITER ;
 
--- CLIENTE --
+#####Cliente#####
 DELIMITER $$
-CREATE PROCEDURE insert_client(
-    IN p_id INT,
+CREATE PROCEDURE insert_cliente(
     IN p_nome VARCHAR(100),
     IN p_data_nascimento DATE,
     IN p_sexo VARCHAR(10),
     IN p_rg VARCHAR(12),
     IN p_cnpj VARCHAR(18),
-    IN p_cpf VARCHAR(14), 	
+    IN p_cpf VARCHAR(14),
     IN p_telefone VARCHAR(15),
-    IN p_email VARCHAR(100)
+    IN p_email VARCHAR(100),
+    IN p_cep VARCHAR(10),
+    IN p_rua VARCHAR(100),
+    IN p_numero INT,
+    IN p_bairro VARCHAR(50),
+    IN p_cidade VARCHAR(50),
+    IN p_estado VARCHAR(2),
+    IN p_tipo_user ENUM('Cliente', 'Funcionário', 'Fornecedor')
 )
+
 BEGIN
-    INSERT INTO Cliente
-    VALUES (p_id, p_nome, p_data_nascimento, p_sexo, p_rg, p_cnpj, p_cpf, p_telefone, p_email); 
+	DECLARE id INT;
+    INSERT INTO Cliente (nome, data_nascimento, sexo, rg, cnpj, cpf, telefone, email, status)
+    VALUES (p_nome, p_data_nascimento, p_sexo, p_rg, p_cnpj, p_cpf, p_telefone, p_email, true); 
+    IF (LAST_INSERT_ID() IS NULL) THEN
+		SET id = 1;
+	ELSE
+		SET id = LAST_INSERT_ID();
+	END IF;
+    CALL insert_address (NULL, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, id, NULL, NULL);
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE select_cliente()
+BEGIN
+    SELECT 
+	Cliente.id,
+	Cliente.nome,
+	Cliente.data_nascimento,
+	Cliente.sexo,
+	Cliente.rg,
+    Cliente.cnpj,
+	Cliente.cpf, 	
+	Cliente.telefone,
+	Cliente.email,
+	Endereco.cep,
+	Endereco.rua,
+	Endereco.numero,
+	Endereco.bairro,
+	Endereco.cidade,
+	Endereco.estado,
+    Cliente.status
+FROM 
+	Endereco, Cliente
+	WHERE (Endereco.id_cli_fk = Cliente.id) 
+	AND (cliente.status = TRUE);
 END $$ 
 DELIMITER ;
 
--- FUNCIONÁRIO --
+DELIMITER $$
+CREATE PROCEDURE select_cliente_id(
+	IN id_cli INT
+)
+BEGIN
+    SELECT 
+	Cliente.id,
+	Cliente.nome,
+	Cliente.data_nascimento,
+	Cliente.sexo,
+	Cliente.rg,
+    Cliente.cnpj,
+	Cliente.cpf, 	
+	Cliente.telefone,
+	Cliente.email,
+	Endereco.cep,
+	Endereco.rua,
+	Endereco.numero,
+	Endereco.bairro,
+	Endereco.cidade,
+	Endereco.estado,
+    Cliente.status
+FROM 
+	Endereco, Cliente
+	WHERE (Endereco.id_cli_fk = Cliente.id)
+	AND Cliente.id = id_cli
+    AND (Cliente.status = TRUE);
+END $$ 
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE update_cliente(
+    IN p_nome VARCHAR(100),
+    IN p_data_nascimento DATE,
+    IN p_sexo VARCHAR(10),
+    IN p_rg VARCHAR(12),
+    IN p_cnpj VARCHAR(18),
+    IN p_cpf VARCHAR(14),
+    IN p_telefone VARCHAR(15),
+    IN p_email VARCHAR(100),
+    IN p_cep VARCHAR(10),
+    IN p_rua VARCHAR(100),
+    IN p_numero INT,
+    IN p_bairro VARCHAR(50),
+    IN p_cidade VARCHAR(50),
+    IN p_estado VARCHAR(2)
+)
+BEGIN
+    UPDATE Cliente
+    SET
+        nome = p_nome,
+        data_nascimento = p_data_nascimento,
+        sexo = p_sexo,
+        rg = p_rg,
+        cnpj = p_cnpj,
+        cpf = p_cpf,
+        telefone = p_telefone,
+        email = p_email
+    WHERE id = p_id;
+    #####Endereço#####
+    UPDATE Endereco
+    SET
+        cep = p_cep,
+        rua = p_rua,
+        numero = p_numero,
+        bairro = p_bairro,
+        cidade = p_cidade,
+        estado = p_estado
+    WHERE id_cli_fk = p_id;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE inative_cliente(
+	IN p_id int)
+BEGIN
+	UPDATE cliente SET status = false where (p_id = id);
+END;
+$$ DELIMITER ;
+
+
+#####Funcionário#####
 DELIMITER $$
 CREATE PROCEDURE insert_funcionario(
     IN p_nome VARCHAR(100),
@@ -63,7 +185,7 @@ CREATE PROCEDURE insert_funcionario(
 )
 BEGIN
 	DECLARE id INT;
-    INSERT INTO Funcionario (nome, data_nascimento, sexo, rg, cpf, telefone, email, ctps, funcao, ativo)
+    INSERT INTO Funcionario (nome, data_nascimento, sexo, rg, cpf, telefone, email, ctps, funcao, status)
     VALUES (p_nome, p_data_nascimento, p_sexo, p_rg, p_cpf, p_telefone, p_email, p_ctps, p_funcao, true); 
     IF (LAST_INSERT_ID() IS NULL) THEN
 		SET id = 1;
@@ -94,11 +216,11 @@ BEGIN
 	Endereco.bairro,
 	Endereco.cidade,
 	Endereco.estado,
-    Funcionario.ativo
+    Funcionario.status
 FROM 
 	Endereco, Funcionario
 	WHERE (Endereco.id_fun_fk = Funcionario.id) 
-	AND (funcionario.ativo = TRUE);
+	AND (funcionario.status = TRUE);
 END $$ 
 DELIMITER ;
 
@@ -124,12 +246,12 @@ BEGIN
 	Endereco.bairro,
 	Endereco.cidade,
 	Endereco.estado,
-    Funcionario.ativo
+    Funcionario.status
 FROM 
 	Endereco, Funcionario
 	WHERE (Endereco.id_fun_fk = Funcionario.id)
 	AND Funcionario.id = id_fun
-    AND (funcionario.ativo = TRUE);
+    AND (funcionario.status = TRUE);
 END $$ 
 DELIMITER ;
 
@@ -165,7 +287,7 @@ BEGIN
         ctps = p_ctps,
         funcao = p_funcao
     WHERE id = p_id;
-    -- endereço
+    #####Endereço#####
     UPDATE Endereco
     SET
         cep = p_cep,
@@ -182,11 +304,11 @@ DELIMITER $$
 CREATE PROCEDURE inative_funcionario(
 	IN p_id int)
 BEGIN
-	UPDATE funcionario SET ativo = false where (p_id = id);
+	UPDATE funcionario SET status = false where (p_id = id);
 END;
 $$ DELIMITER ;
 
--- FORNECEDOR --
+#####Fornecedor#####
 DELIMITER $$ 
 CREATE PROCEDURE insert_fornecedor(
     IN p_razao_social VARCHAR(100),
@@ -211,7 +333,7 @@ CREATE PROCEDURE insert_fornecedor(
 BEGIN 
 	DECLARE id INT;
 	
-    INSERT INTO Fornecedor (razao_social, nome_fantasia, cnpj, inscricao_estadual, inscricao_municipal, responsavel, contato_1, contato_2, contato_3, email_1, email_2, ativo)
+    INSERT INTO Fornecedor (razao_social, nome_fantasia, cnpj, inscricao_estadual, inscricao_municipal, responsavel, contato_1, contato_2, contato_3, email_1, email_2, status)
     VALUES (p_razao_social, p_nome_fantasia, p_cnpj, p_inscricao_estadual, p_inscricao_municipal, p_responsavel, p_contato_1, p_contato_2, p_contato_3, p_email_1, p_email_2, true); 
     IF (LAST_INSERT_ID() IS NULL) THEN
 		SET id = 1;
@@ -244,11 +366,11 @@ BEGIN
 	Endereco.bairro,
 	Endereco.cidade,
 	Endereco.estado,
-    Fornecedor.ativo
+    Fornecedor.status
 FROM 
 	Endereco
 	INNER JOIN Fornecedor ON (Endereco.id_for_fk = Fornecedor.id) 
-	WHERE (Fornecedor.ativo = TRUE);
+	WHERE (Fornecedor.status = TRUE);
 END $$ 
 DELIMITER ;
 
@@ -276,12 +398,12 @@ BEGIN
 	Endereco.bairro,
 	Endereco.cidade,
 	Endereco.estado,
-    Fornecedor.ativo
+    Fornecedor.status
 FROM 
 	Endereco
 	INNER JOIN Fornecedor ON (Endereco.id_for_fk = Fornecedor.id) 
 	WHERE Fornecedor.id = id_for
-    AND (Fornecedor.ativo = TRUE);
+    AND (Fornecedor.status = TRUE);
 END $$ 
 DELIMITER ;
 
@@ -321,7 +443,7 @@ BEGIN
         email_1 = p_email_1,
         email_2 = p_email_2
     WHERE id = p_id;
-    -- endereço
+    #####Endereco#####
     UPDATE Endereco
     SET
         cep = p_cep,
@@ -339,11 +461,11 @@ CREATE PROCEDURE inative_fornecedor(
 	IN p_id INT
 )
 BEGIN
-	UPDATE Fornecedor SET ativo = FALSE WHERE (id = p_id);
+	UPDATE Fornecedor SET status = FALSE WHERE (id = p_id);
 END $$
 DELIMITER ;
 
--- CAIXA --
+#####Caixa#####
 DELIMITER $$
 CREATE PROCEDURE open_caixa(
     IN p_numero INT,
