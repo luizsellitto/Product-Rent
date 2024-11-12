@@ -113,7 +113,6 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE PROCEDURE update_cliente(
-	IN p_id int,
     IN p_nome VARCHAR(100),
     IN p_data_nascimento DATE,
     IN p_sexo VARCHAR(10),
@@ -375,9 +374,6 @@ FROM
 END $$ 
 DELIMITER ;
 
-select * from produto;
-
-drop PROCEDURE select_fornecedor;
 DELIMITER $$
 CREATE PROCEDURE select_fornecedor_id(
 	IN id_for INT
@@ -543,16 +539,17 @@ BEGIN
 	produto.valor_aluguel, 	
 	produto.descricao,
     fornecedor.id,
-	fornecedor.nome_fantasia
+	fornecedor.nome_fantasia,
+	fornecedor.responsavel
 FROM 
-	produto INNER JOIN fornecedor on (produto.id_for_fk = fornecedor.id);
+	fornecedor, produto
+	WHERE (produto.id_for_fk = fornecedor.id);
 END $$ 
 DELIMITER ;
 
 call select_produto;
-drop PROCEDURE select_Produto;
 
-select * from produto;
+
 DELIMITER $$
 CREATE PROCEDURE select_produto_id(IN id_pro INT)
 BEGIN
@@ -565,9 +562,11 @@ BEGIN
 	produto.valor_aluguel, 	
 	produto.descricao,
     fornecedor.id,
-	fornecedor.nome_fantasia
+	fornecedor.nome_fantasia,
+	fornecedor.responsavel
 FROM 
-	produto INNER JOIN fornecedor on (produto.id_for_fk = fornecedor.id)
+	fornecedor, produto
+	WHERE (produto.id_for_fk = fornecedor.id)
     AND (produto.id = id_pro);
 END $$ 
 DELIMITER ;
@@ -585,7 +584,6 @@ CREATE PROCEDURE update_produto(
     IN p_descricao VARCHAR(500),
     IN p_id_for INT
 ) 
-
 BEGIN
     UPDATE produto
     SET
@@ -600,15 +598,83 @@ BEGIN
 END $$
 DELIMITER ;
 
-call update_produto(1, 'casa', 'gucci', 'G', 'vermelho', 960.30, 'tanto faz', 1);
 
+-- ALUGUEL --
 DELIMITER $$
-CREATE PROCEDURE inative_produto(
-	IN p_id INT
+CREATE PROCEDURE insert_aluguel(
+    IN p_data_retirada DATE,
+    IN p_data_devolucao DATE,
+    IN p_valor_total DOUBLE,
+    IN p_id_fun_fk INT,
+    IN p_id_cli_fk INT
 )
 BEGIN
-	UPDATE produto SET status = FALSE WHERE (id = p_id);
-END $$
+    INSERT INTO Aluguel (data_retirada, data_devolucao, valor_total, id_fun_fk, id_cli_fk)
+    VALUES (p_data_retirada, p_data_devolucao, p_valor_total, p_id_fun_fk, p_id_cli_fk); 
+END $$ 
 DELIMITER ;
 
+DELIMITER $$
+CREATE PROCEDURE select_aluguel()
+BEGIN
+    SELECT
+    aluguel.id,
+	aluguel.data_retirada,
+	aluguel.data_devolucao,
+	aluguel.valor_total,
+	aluguel.id_cli_fk as 'ID cliente',
+    cliente.nome as 'Nome cliente',
+	aluguel.id_fun_fk as 'ID funcionário',
+    funcionario.nome as 'Nome funcionário'
+FROM 
+	aluguel INNER JOIN funcionario ON (aluguel.id_fun_fk = funcionario.id)
+    INNER JOIN cliente ON (aluguel.id_cli_fk = cliente.id);
+END $$ 
+DELIMITER ;
 
+DELIMITER $$
+CREATE PROCEDURE select_aluguel_id(IN id_alu INT)
+BEGIN
+    SELECT 
+	aluguel.id,
+	aluguel.data_retirada,
+	aluguel.data_devolucao,
+	aluguel.valor_total,
+	aluguel.id_cli_fk as 'ID cliente',
+    cliente.nome as 'Nome cliente',
+	aluguel.id_fun_fk as 'ID funcionário',
+    funcionario.nome as 'Nome funcionário'
+
+FROM 
+	aluguel INNER JOIN cliente ON (aluguel.id_cli_fk = cliente.id)
+    INNER JOIN funcionario ON (aluguel.id_fun_fk = funcionario.id)
+    AND (id_alu = aluguel.id);
+END $$ 
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE update_aluguel(
+	IN p_id INT,
+    IN p_data_retirada DATE,
+    IN p_data_devolucao DATE,
+    IN p_valor_total DOUBLE
+) 
+BEGIN
+    UPDATE aluguel
+    SET
+        data_retirada = p_data_retirada,
+        data_devoluca = p_data_devolucao,
+        valor_total = p_valor_total
+    WHERE id = p_id;
+   
+END $$
+DELIMITER ;
+select * from aluguel;
+call inative_aluguel(2);
+DELIMITER $$
+CREATE PROCEDURE inative_aluguel(
+	IN p_id int)
+BEGIN
+	UPDATE aluguel SET status = false where (p_id = id);
+END;
+$$ DELIMITER ;
