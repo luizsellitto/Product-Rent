@@ -502,6 +502,7 @@ BEGIN
 END $$
 DELIMITER ;
 
+
 DELIMITER $$
 CREATE PROCEDURE select_caixa_id(
 	IN p_id INT
@@ -510,6 +511,7 @@ BEGIN
     SELECT * FROM Caixa WHERE (id = p_id);
 END $$
 DELIMITER ;
+
 
 -- PRODUTO --
 DELIMITER $$
@@ -522,17 +524,14 @@ CREATE PROCEDURE insert_produto(
     IN p_descricao VARCHAR(500),
     IN p_id_for INT
 )
-
 BEGIN
     INSERT INTO Produto (nome, marca, tamanho, cor, valor_aluguel, descricao, id_for_fk)
     VALUES (p_nome, p_marca, p_tamanho, p_cor, p_valor_aluguel, p_descricao, p_id_for); 
 END $$ 
 DELIMITER ;
-	call insert_produto('produto', 'gucci', 'G', 'vermelho', 960.30, 'tanto faz', 1);
-
 
 DELIMITER $$
-CREATE PROCEDURE select_Produto()
+CREATE PROCEDURE select_produto()
 BEGIN
     SELECT 
 	produto.id,
@@ -549,10 +548,6 @@ FROM
 END $$ 
 DELIMITER ;
 
-call select_produto;
-drop PROCEDURE select_Produto;
-
-select * from produto;
 DELIMITER $$
 CREATE PROCEDURE select_produto_id(IN id_pro INT)
 BEGIN
@@ -571,8 +566,6 @@ FROM
     AND (produto.id = id_pro);
 END $$ 
 DELIMITER ;
-call select_produto_id(1);
-
 
 DELIMITER $$
 CREATE PROCEDURE update_produto(
@@ -585,7 +578,6 @@ CREATE PROCEDURE update_produto(
     IN p_descricao VARCHAR(500),
     IN p_id_for INT
 ) 
-
 BEGIN
     UPDATE produto
     SET
@@ -600,14 +592,93 @@ BEGIN
 END $$
 DELIMITER ;
 
-call update_produto(1, 'casa', 'gucci', 'G', 'vermelho', 960.30, 'tanto faz', 1);
-
 DELIMITER $$
 CREATE PROCEDURE inative_produto(
 	IN p_id INT
 )
 BEGIN
 	UPDATE produto SET status = FALSE WHERE (id = p_id);
+END $$
+DELIMITER ;
+
+-- COMPRA --
+DELIMITER $$
+CREATE PROCEDURE insert_compra(
+    IN p_data DATE,
+    IN p_valor_total DOUBLE,
+    IN p_forma_de_pagamento VARCHAR(50),
+    IN p_id_fun INT,
+    IN p_id_for INT
+)
+BEGIN
+    INSERT INTO Compra (data, valor_total, forma_de_pagamento, id_fun_fk, id_for_fk, status)
+    VALUES (p_data, p_valor_total, p_forma_de_pagamento, p_id_fun, p_id_for, TRUE); 
+END $$ 
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE select_compra()
+BEGIN
+    SELECT 
+    compra.id,
+    compra.data,
+    compra.valor_total,
+    compra.forma_de_pagamento,
+    compra.id_for_fk as 'ID fornecedor',
+    fornecedor.nome_fantasia as 'Nome fantasia',
+    fornecedor.razao_social as 'Razão social',
+    compra.id_fun_fk as 'ID funcionário',
+    funcionario.nome as 'Nome funcionário'
+FROM 
+	 compra INNER JOIN fornecedor ON (compra.id_for_fk = fornecedor.id)
+     INNER JOIN funcionario ON (compra.id_fun_fk = funcionario.id)
+     WHERE (compra.status = TRUE);
+END $$ 
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE select_compra_id(IN id_com INT)
+BEGIN
+    SELECT 
+	compra.id,
+    compra.data,
+    compra.valor_total,
+    compra.forma_de_pagamento,
+    compra.id_for_fk as 'ID fornecedor',
+    fornecedor.nome_fantasia as 'Nome fantasia',
+    fornecedor.razao_social as 'Razão social',
+    compra.id_fun_fk as 'ID funcionário',
+    funcionario.nome as 'Nome funcionário'
+FROM 
+	 compra INNER JOIN fornecedor ON (compra.id_for_fk = fornecedor.id)
+     INNER JOIN funcionario ON (compra.id_fun_fk = funcionario.id)
+     WHERE (id_com = compra.id)
+     AND (compra.status = TRUE);
+END $$ 
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE update_compra(
+    IN p_id INT,
+    IN p_valor_total DOUBLE,
+    IN p_forma_de_pagamento VARCHAR(50)
+)
+BEGIN
+    UPDATE Compra
+    SET
+        valor_total = p_valor_total,
+        forma_de_pagamento = p_forma_de_pagamento
+    WHERE id = p_id 
+    AND (compra.status = TRUE);
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE inative_compra(
+	IN p_id INT
+)
+BEGIN
+	UPDATE compra SET status = FALSE WHERE (id = p_id);
 END $$
 DELIMITER ;
 

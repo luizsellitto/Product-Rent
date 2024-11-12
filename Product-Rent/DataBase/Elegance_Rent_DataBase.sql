@@ -94,7 +94,8 @@ CREATE TABLE Compra (
     id_fun_fk INT,
     id_for_fk INT,
     FOREIGN KEY (id_fun_fk) REFERENCES Funcionario (id),
-    FOREIGN KEY (id_for_fk) REFERENCES Fornecedor (id)
+    FOREIGN KEY (id_for_fk) REFERENCES Fornecedor (id),
+    status bool
 );
 
 CREATE TABLE Compra_Produto (
