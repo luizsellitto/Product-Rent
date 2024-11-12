@@ -82,7 +82,7 @@ namespace Product_Rent.Models
                             Cidade = reader.GetString("cidade"),
                             Estado = reader.GetString("estado"),
                         },
-                        Status = reader.GetBoolean("ativo")
+                        Status = reader.GetBoolean("status")
                     });
 
                 }
@@ -131,7 +131,7 @@ namespace Product_Rent.Models
                             Cidade = reader.GetString("cidade"),
                             Estado = reader.GetString("estado")
                         },
-                        Status = reader.GetBoolean("ativo")
+                        Status = reader.GetBoolean("status")
                     };
                 }
                 return funcionario;
