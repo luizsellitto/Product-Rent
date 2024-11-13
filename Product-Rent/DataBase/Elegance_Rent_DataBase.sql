@@ -146,15 +146,17 @@ CREATE TABLE Recebimento (
     FOREIGN KEY (id_cai_fk) REFERENCES Caixa (id),
     FOREIGN KEY (id_alu_fk) REFERENCES Aluguel (id)
 );
--- FALTA-----------------------
+-- Despesa-------------------
 CREATE TABLE Despesa (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     nome VARCHAR(100),
     data DATETIME,
     vencimento DATE,
     parcelamento INT,
-    descricao VARCHAR(300)
+    descricao VARCHAR(300),
+    status bool
 );
+
 -- FALTA-----------------------
 CREATE TABLE Pagamento (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,

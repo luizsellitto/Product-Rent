@@ -752,6 +752,102 @@ BEGIN
 END $$
 DELIMITER ;
 
+-- DESPESA --
+
+DELIMITER $$
+CREATE PROCEDURE insert_despesa(
+    IN p_nome VARCHAR(100),
+    IN p_data DATETIME,
+    IN p_vencimento DATE,
+    IN p_parcelamento INT,
+    IN p_descricao VARCHAR(300)
+)
+
+BEGIN
+	DECLARE id INT;
+    INSERT INTO Despesa (nome, data, vencimento, parcelamento, descricao, status)
+    VALUES (p_nome, p_data, p_vencimento, p_parcelamento, p_descricao, true);
+    IF (LAST_INSERT_ID() IS NULL) THEN
+		SET id = 1;
+	ELSE
+		SET id = LAST_INSERT_ID();
+	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE select_despesa()
+BEGIN
+    SELECT 
+	Despesa.id,
+	Despesa.nome,
+	Despesa.data,
+	Despesa.vencimento,
+	Despesa.parcelamento,
+    Despesa.descricao,
+	Despesa.status
+FROM 
+	Despesa
+	WHERE (Despesa.status = TRUE);
+END $$ 
+DELIMITER ;
+select * from despesa;
+DELIMITER $$
+CREATE PROCEDURE select_despesa_id(
+	IN id_des INT
+)
+BEGIN
+    SELECT 
+	Despesa.id,
+	Despesa.nome,
+	Despesa.data,
+	Despesa.vencimento,
+	Despesa.parcelamento,
+    Despesa.descricao,
+	Despesa.status
+FROM
+	Despesa
+	WHERE (Despesa.status = TRUE) and (Despesa.id = id_des);
+END $$ 
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE update_despesa(
+	IN p_id int,
+	IN p_nome VARCHAR(100),
+    IN p_data DATETIME,
+    IN p_vencimento DATE,
+    IN p_parcelamento INT,
+    IN p_descricao VARCHAR(300)
+)
+BEGIN
+    UPDATE Despesa
+    SET
+        nome = p_nome,
+        data = p_data,
+        vencimento = p_vencimento,
+        parcelamento = p_parcelamento,
+        descricao = p_descricao
+    WHERE id = p_id;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE inative_despesa(
+	IN p_id int)
+BEGIN
+	UPDATE Despesa SET status = false where (p_id = id);
+END;
+$$ DELIMITER ;
+
+CALL insert_despesa(
+    'Aluguel',
+    '2024-11-01 10:00:00',
+    '2024-11-15',
+    3,
+    'Parcela do aluguel de novembro'
+);
+
 
 /*
 CALL insert_fornecedor('Razão Social Exemplo', 'Nome Fantasia Exemplo', '12.345.678/0001-90', '123456789', '987654321', 'Carlos Silva', '(11) 12345-6789', '(11) 98765-4321', '(11) 23456-7890', 'contato1@email.com', 'contato2@email.com', '12345-678', 'Rua Exemplo', 500, 'Centro', 'São Paulo', 'SP', 'Fornecedor');
