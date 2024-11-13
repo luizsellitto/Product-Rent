@@ -111,7 +111,7 @@ namespace Product_Rent.Models
             try
             {
                 var query = conn.Query();
-                query.CommandText = "CALL update_fornecedor (@id, @data_retirada, @data_devolucao, @valor_total, @id_fun_fk, @id_cli_fk)";
+                query.CommandText = "CALL update_aluguel (@id, @data_retirada, @data_devolucao, @valor_total, @id_fun_fk, @id_cli_fk)";
 
                 query.Parameters.AddWithValue("@id", id);
                 query.Parameters.AddWithValue("@data_retirada", item.DataRetirada);

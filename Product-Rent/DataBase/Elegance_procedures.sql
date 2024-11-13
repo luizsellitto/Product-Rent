@@ -615,7 +615,7 @@ BEGIN
     VALUES (p_data_retirada, p_data_devolucao, p_valor_total, p_id_fun_fk, p_id_cli_fk); 
 END $$ 
 DELIMITER ;
-drop procedure insert_aluguel;
+
 DELIMITER $$
 CREATE PROCEDURE select_aluguel()
 BEGIN
@@ -764,14 +764,8 @@ CREATE PROCEDURE insert_despesa(
 )
 
 BEGIN
-	DECLARE id INT;
     INSERT INTO Despesa (nome, data, vencimento, parcelamento, descricao, status)
     VALUES (p_nome, p_data, p_vencimento, p_parcelamento, p_descricao, true);
-    IF (LAST_INSERT_ID() IS NULL) THEN
-		SET id = 1;
-	ELSE
-		SET id = LAST_INSERT_ID();
-	END IF;
 END $$
 DELIMITER ;
 
@@ -791,7 +785,7 @@ FROM
 	WHERE (Despesa.status = TRUE);
 END $$ 
 DELIMITER ;
-select * from despesa;
+
 DELIMITER $$
 CREATE PROCEDURE select_despesa_id(
 	IN id_des INT
@@ -848,10 +842,107 @@ CALL insert_despesa(
     'Parcela do aluguel de novembro'
 );
 
+-- RECEBIMENTO --
+
+DELIMITER $$
+CREATE PROCEDURE insert_recebimento(
+    IN p_status VARCHAR(20),
+    IN p_valor DOUBLE,
+    IN p_parcela INT,
+    IN p_data DATE,
+    IN p_forma VARCHAR(50),
+    IN p_vencimento DATE,
+    IN p_id_cai_fk INT,
+    IN p_id_alu_fk INT
+)
+
+BEGIN
+    INSERT INTO Recebimento (status, valor, parcela, data, forma, vencimento, id_cai_fk, id_alu_fk)
+    VALUES (p_status, p_valor, p_parcela, p_data, p_forma, p_vencimento, p_id_cai_fk, p_id_alu_fk);
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE select_recebimento()
+BEGIN
+    SELECT
+    Recebimento.id,
+    Recebimento.status,
+    Recebimento.valor,
+    Recebimento.parcela,
+    Recebimento.data,
+    Recebimento.forma,
+    Recebimento.vencimento,
+    Recebimento.id_cai_fk,
+    Recebimento.id_alu_fk
+FROM 
+	Recebimento;
+END $$ 
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE select_recebimento_id(
+	IN id_rec INT
+)
+BEGIN
+    SELECT 
+	Recebimento.id,
+    Recebimento.status,
+    Recebimento.valor,
+    Recebimento.parcela,
+    Recebimento.data,
+    Recebimento.forma,
+    Recebimento.vencimento,
+    Recebimento.id_cai_fk,
+    Recebimento.id_alu_fk
+FROM
+	Recebimento
+	WHERE (Recebimento.id = id_rec);
+END $$ 
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE update_recebimento(
+	IN p_id INT,
+	IN p_status VARCHAR(20),
+    IN p_valor DOUBLE,
+    IN p_parcela INT,
+    IN p_data DATE,
+    IN p_forma VARCHAR(50),
+    IN p_vencimento DATE,
+    IN p_id_cai_fk INT,
+    IN p_id_alu_fk INT
+)
+BEGIN
+    UPDATE Recebimento
+    SET
+        status = p_status,
+        valor = p_valor,
+        parcela = p_parcela,
+        data = p_data,
+        forma = p_forma,
+        vencimento = p_vencimento,
+        id_cai_fk = p_id_cai_fk,
+        id_alu_fk = p_id_alu_fk
+    WHERE id = p_id;
+END $$
+DELIMITER ;
+
+
+
 
 /*
 CALL insert_fornecedor('Razão Social Exemplo', 'Nome Fantasia Exemplo', '12.345.678/0001-90', '123456789', '987654321', 'Carlos Silva', '(11) 12345-6789', '(11) 98765-4321', '(11) 23456-7890', 'contato1@email.com', 'contato2@email.com', '12345-678', 'Rua Exemplo', 500, 'Centro', 'São Paulo', 'SP', 'Fornecedor');
 CALL insert_fornecedor('Razão Social Exemplo', 'Nome Fantasia Exemplo', '12.345.678/0001-90', '123456789', '987654321', 'Carlos Silva', '(11) 12345-6789', '(11) 98765-4321', '(11) 23456-7890', 'contato1@email.com', 'contato2@email.com', '12345-678', 'Rua Exemplo', 500, 'Centro', 'São Paulo', 'SP', 'Fornecedor');
 CALL insert_funcionario('João Silva', '1990-05-15', 'Masculino', '123456789', '123.456.789-00', '(11) 98765-4321', 'joao.silva@email.com', '123456789', 'Gerente', '12345-678', 'Rua Exemplo', 100, 'Centro', 'São Paulo', 'SP', 'Funcionário');
 CALL insert_funcionario('João Silva', '1990-05-15', 'Masculino', '123456789', '123.456.789-00', '(11) 98765-4321', 'joao.silva@email.com', '123456789', 'Gerente', '12345-678', 'Rua Exemplo', 100, 'Centro', 'São Paulo', 'SP', 'Funcionário');
+CALL insert_cliente('João Silva', '1990-05-15', 'Masculino', '123456789', '12345678000199', '12345678909', '(11) 98765-4321', 'joao.silva@email.com', '12345-678', 'Rua Exemplo', 123, 'Centro', 'São Paulo', 'SP', 'Cliente');
+
+CALL open_caixa(101, '2024-11-13', 500.00, 'Aberto', 1);
+CALL insert_aluguel('2024-11-13', '2024-11-20', 100.00, 1, 1);
+
+CALL insert_recebimento('Pago', 150.00, 1, '2024-11-13', 'Cartão de Crédito', '2024-12-13', 1, 1);
+CALL select_recebimento();
+CALL select_recebimento_id(1);
+CALL update_recebimento(1, 'Pendente', 200.00, 2, '2024-11-13', 'Boleto', '2024-12-20', 1, 1);
 */

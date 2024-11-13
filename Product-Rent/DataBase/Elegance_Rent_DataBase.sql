@@ -132,7 +132,7 @@ CREATE TABLE Caixa (
     id_fun_fk INT,
     FOREIGN KEY (id_fun_fk) REFERENCES Funcionario (id)
 );
--- FALTA-----------------------
+-- Recebimento-----------------------
 CREATE TABLE Recebimento (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     status VARCHAR(20),
