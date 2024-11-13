@@ -9,6 +9,5 @@
         public Fornecedor IdFuncionario { get; set; }
         public int IdCliente { get; set; }
 
-
     }
 }

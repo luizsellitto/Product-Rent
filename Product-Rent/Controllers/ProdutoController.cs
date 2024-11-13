@@ -1,5 +1,4 @@
-﻿using Atividade_ANP_API.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Product_Rent.DTOs;
 using Product_Rent.Models;
 
@@ -12,13 +11,20 @@ namespace Product_Rent.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] ProdutoDTO item)
         {
-            if (item == null)
+            try
             {
-                return BadRequest("produto não pode ser vazio.");
-            }
+                if (item == null)
+                {
+                    return BadRequest("produto não pode ser vazio.");
+                }
 
-            var produto = new ProdutoDAO().Insert(item);
-            return Ok(produto);
+                var produto = new ProdutoDAO().Insert(item);
+                return Ok(produto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]

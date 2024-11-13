@@ -1,4 +1,4 @@
-﻿namespace Atividade_ANP_API.Models
+﻿namespace Product_Rent.Models
 {
     public static class ValidarCNPJ
     {

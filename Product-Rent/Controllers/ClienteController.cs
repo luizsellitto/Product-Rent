@@ -1,5 +1,4 @@
-﻿using Atividade_ANP_API.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Product_Rent.DTOs;
 using Product_Rent.Models;
@@ -13,30 +12,37 @@ namespace Product_Rent.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] ClienteDTO clienteDto)
         {
-            if (clienteDto == null)
+            try
             {
-                return BadRequest("Cliente não pode ser vazio.");
-            }
-
-            if (clienteDto.CNPJ != "")
-            {
-                if ((ValidarCNPJ.ValidaCnpj(clienteDto.CNPJ) == false))
+                if (clienteDto == null)
                 {
-                    return BadRequest("CNPJ inválido.");
+                    return BadRequest("Cliente não pode ser vazio.");
                 }
-            }
 
-
-            if (clienteDto.CPF != "")
-            {
-                if (ValidarCPF.ValidaCPF(clienteDto.CPF) == false)
+                if (clienteDto.CNPJ != "")
                 {
-                    return BadRequest("CPF inválido.");
+                    if ((ValidarCNPJ.ValidaCnpj(clienteDto.CNPJ) == false))
+                    {
+                        return BadRequest("CNPJ inválido.");
+                    }
                 }
-            }
 
-            var cliente = new ClienteDAO().Insert(clienteDto);
-            return Ok(cliente);
+
+                if (clienteDto.CPF != "")
+                {
+                    if (ValidarCPF.ValidaCPF(clienteDto.CPF) == false)
+                    {
+                        return BadRequest("CPF inválido.");
+                    }
+                }
+
+                var cliente = new ClienteDAO().Insert(clienteDto);
+                return Ok(cliente);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]

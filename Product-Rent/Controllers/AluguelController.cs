@@ -1,5 +1,4 @@
-﻿using Atividade_ANP_API.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Product_Rent.DTOs;
 using Product_Rent.Models;

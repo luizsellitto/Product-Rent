@@ -705,15 +705,10 @@ BEGIN
     compra.data,
     compra.valor_total,
     compra.forma_de_pagamento,
-    compra.id_for_fk as 'ID fornecedor',
-    fornecedor.nome_fantasia as 'Nome fantasia',
-    fornecedor.razao_social as 'Razão social',
-    compra.id_fun_fk as 'ID funcionário',
-    funcionario.nome as 'Nome funcionário'
-FROM 
-	 compra INNER JOIN fornecedor ON (compra.id_for_fk = fornecedor.id)
-     INNER JOIN funcionario ON (compra.id_fun_fk = funcionario.id)
-     WHERE (compra.status = TRUE);
+    compra.id_for_fk,
+    compra.id_fun_fk
+	FROM compra
+	WHERE (compra.status = TRUE);
 END $$ 
 DELIMITER ;
 
@@ -725,16 +720,11 @@ BEGIN
     compra.data,
     compra.valor_total,
     compra.forma_de_pagamento,
-    compra.id_for_fk as 'ID fornecedor',
-    fornecedor.nome_fantasia as 'Nome fantasia',
-    fornecedor.razao_social as 'Razão social',
-    compra.id_fun_fk as 'ID funcionário',
-    funcionario.nome as 'Nome funcionário'
+    compra.id_for_fk,
+    compra.id_fun_fk
 FROM 
-	 compra INNER JOIN fornecedor ON (compra.id_for_fk = fornecedor.id)
-     INNER JOIN funcionario ON (compra.id_fun_fk = funcionario.id)
-     WHERE (id_com = compra.id)
-     AND (compra.status = TRUE);
+	 compra
+     WHERE ((id_com = compra.id) AND (compra.status = TRUE));
 END $$ 
 DELIMITER ;
 
@@ -760,7 +750,15 @@ CREATE PROCEDURE inative_compra(
 )
 BEGIN
 	UPDATE compra SET status = FALSE WHERE (id = p_id);
+    UPDATE compra SET valor_total = 0 WHERE (id = p_id);
 END $$
 DELIMITER ;
 
 
+/*
+CALL insert_fornecedor('Razão Social Exemplo', 'Nome Fantasia Exemplo', '12.345.678/0001-90', '123456789', '987654321', 'Carlos Silva', '(11) 12345-6789', '(11) 98765-4321', '(11) 23456-7890', 'contato1@email.com', 'contato2@email.com', '12345-678', 'Rua Exemplo', 500, 'Centro', 'São Paulo', 'SP', 'Fornecedor');
+CALL insert_fornecedor('Razão Social Exemplo', 'Nome Fantasia Exemplo', '12.345.678/0001-90', '123456789', '987654321', 'Carlos Silva', '(11) 12345-6789', '(11) 98765-4321', '(11) 23456-7890', 'contato1@email.com', 'contato2@email.com', '12345-678', 'Rua Exemplo', 500, 'Centro', 'São Paulo', 'SP', 'Fornecedor');
+CALL insert_funcionario('João Silva', '1990-05-15', 'Masculino', '123456789', '123.456.789-00', '(11) 98765-4321', 'joao.silva@email.com', '123456789', 'Gerente', '12345-678', 'Rua Exemplo', 100, 'Centro', 'São Paulo', 'SP', 'Funcionário');
+CALL insert_funcionario('João Silva', '1990-05-15', 'Masculino', '123456789', '123.456.789-00', '(11) 98765-4321', 'joao.silva@email.com', '123456789', 'Gerente', '12345-678', 'Rua Exemplo', 100, 'Centro', 'São Paulo', 'SP', 'Funcionário');
+
+ */
