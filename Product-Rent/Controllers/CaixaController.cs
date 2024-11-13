@@ -12,13 +12,17 @@ namespace Product_Rent.Controllers
         public IActionResult Open([FromBody] CaixaDTO item)
         {
             var caixa = new Caixa();
-            caixa.Numero = item.Numero;
-            //caixa.Data = item.Data;
-            caixa.SaldoInicial = item.SaldoInicial;
-            caixa.FuncionarioId = item.FuncionarioId;
-
             try
             {
+                var funcionario = new FuncionarioDAO().GetById(item.FuncionarioId);
+                if (funcionario == null)
+                {
+                    return BadRequest("Funcionário não encontrado");
+                }
+                caixa.Numero = item.Numero;
+                caixa.SaldoInicial = item.SaldoInicial;
+                caixa.FuncionarioId = item.FuncionarioId;
+
                 var dao = new CaixaDAO();
                 caixa.Id = dao.OpenCaixa(caixa);
             }
@@ -49,11 +53,13 @@ namespace Product_Rent.Controllers
         public IActionResult Close(int id, [FromBody] CaixaDTO item) //Arrumar: permite fechar caixa já fechado;
         {                                                            //Saldo final, recebimento e retiradas precisam 
             var caixa = new Caixa();                                 //ser escritas ou será automático do sistema?
-            caixa.SaldoFinal = item.SaldoFinal;
-            caixa.TotalRecebimentos = item.TotalRecebimentos;
-            caixa.TotalRetiradas = item.TotalRetiradas;
+           
             try
             {
+                caixa.SaldoFinal = item.SaldoFinal;
+                caixa.TotalRecebimentos = item.TotalRecebimentos;
+                caixa.TotalRetiradas = item.TotalRetiradas;
+
                 var dao = new CaixaDAO().CloseCaixa(id, caixa);
                 if (dao == null)
                 {

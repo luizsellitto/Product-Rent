@@ -57,7 +57,7 @@ namespace Product_Rent.Models
                         DataDevolucao = reader.GetDateTime("data_devolucao"),
                         DataRetirada = reader.GetDateTime("data_retirada"),
                         ValorTotal = reader.GetDouble("valor_total"),
-                        IdFuncionario = reader.("id_fun_fk"),
+                        IdFuncionario = reader.GetInt32("id_fun_fk"),       
                         IdCliente = reader.GetInt32("id_cli_fk")
                     });
                 }
