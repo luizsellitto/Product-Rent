@@ -611,13 +611,11 @@ CREATE PROCEDURE insert_aluguel(
     IN p_id_cli_fk INT
 )
 BEGIN
-	UPDATE produto SET status = FALSE WHERE (id = p_id);
-END $$
     INSERT INTO Aluguel (data_retirada, data_devolucao, valor_total, id_fun_fk, id_cli_fk)
     VALUES (p_data_retirada, p_data_devolucao, p_valor_total, p_id_fun_fk, p_id_cli_fk); 
 END $$ 
 DELIMITER ;
-
+drop procedure insert_aluguel;
 DELIMITER $$
 CREATE PROCEDURE select_aluguel()
 BEGIN
@@ -760,5 +758,4 @@ CALL insert_fornecedor('Razão Social Exemplo', 'Nome Fantasia Exemplo', '12.345
 CALL insert_fornecedor('Razão Social Exemplo', 'Nome Fantasia Exemplo', '12.345.678/0001-90', '123456789', '987654321', 'Carlos Silva', '(11) 12345-6789', '(11) 98765-4321', '(11) 23456-7890', 'contato1@email.com', 'contato2@email.com', '12345-678', 'Rua Exemplo', 500, 'Centro', 'São Paulo', 'SP', 'Fornecedor');
 CALL insert_funcionario('João Silva', '1990-05-15', 'Masculino', '123456789', '123.456.789-00', '(11) 98765-4321', 'joao.silva@email.com', '123456789', 'Gerente', '12345-678', 'Rua Exemplo', 100, 'Centro', 'São Paulo', 'SP', 'Funcionário');
 CALL insert_funcionario('João Silva', '1990-05-15', 'Masculino', '123456789', '123.456.789-00', '(11) 98765-4321', 'joao.silva@email.com', '123456789', 'Gerente', '12345-678', 'Rua Exemplo', 100, 'Centro', 'São Paulo', 'SP', 'Funcionário');
-
- */
+*/

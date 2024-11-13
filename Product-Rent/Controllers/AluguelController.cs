@@ -12,11 +12,25 @@ namespace Product_Rent.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] AluguelDTO item)
         {
-            if (item == null)
-            {
-                return BadRequest("Aluguel não pode ser vazio.");
-            }
             var aluguel = new AluguelDAO().Insert(item);
+
+            try
+            {
+                var cliente = new ClienteDAO().GetById(item.IdCliente);
+                var funcionario = new FuncionarioDAO().GetById(item.IdFuncionario);
+                if (cliente == null || funcionario == null)
+                {
+                    return BadRequest("Cliente ou Funcionário não encontrados.");
+                }
+                if (item == null)
+                {
+                    return BadRequest("Aluguel não pode ser vazio.");
+                }
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
             return Ok(aluguel);
         }
 
@@ -30,19 +44,27 @@ namespace Product_Rent.Controllers
             }
             catch (Exception ex)
             {
-                return Problem(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var item = new AluguelDAO().GetById(id);
-            if (item == null)
+            try
             {
-                return NotFound();
+                var item = new AluguelDAO().GetById(id);
+                if (item == null)
+                {
+                    return NotFound();
+                }
+                return Ok(item);
             }
-            return Ok(item);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpPut("{id}")]
@@ -64,16 +86,26 @@ namespace Product_Rent.Controllers
             }
             catch (Exception ex)
             {
-                return Problem(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            new AluguelDAO().Inative(id);
-
-            return NoContent();
+            try
+            {
+                Aluguel aluguel = new AluguelDAO().Inative(id);
+                if (aluguel == null)
+                {
+                    return NotFound("Aluguel não encontrado.");
+                }
+                return NoContent();
+            }
+            catch(Exception ex) 
+            { 
+                return BadRequest(ex.Message) ;            
+            } 
         }
     }
 }
