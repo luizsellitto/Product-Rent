@@ -97,8 +97,8 @@ CREATE TABLE Compra (
     FOREIGN KEY (id_for_fk) REFERENCES Fornecedor (id),
     status bool
 );
-
-CREATE TABLE Compra_Produto (
+-- FALTA-----------------------
+CREATE TABLE Compra_Produto ( 
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     valor_total DOUBLE,
     valor_unitario DOUBLE,
@@ -108,7 +108,7 @@ CREATE TABLE Compra_Produto (
     FOREIGN KEY (id_prod_fk) REFERENCES Produto (id),
     FOREIGN KEY (id_comp_fk) REFERENCES Compra (id)
 );
-
+-- FALTA-----------------------
 CREATE TABLE Aluguel_Produto (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     valor_total DOUBLE,
@@ -132,7 +132,7 @@ CREATE TABLE Caixa (
     id_fun_fk INT,
     FOREIGN KEY (id_fun_fk) REFERENCES Funcionario (id)
 );
-
+-- FALTA-----------------------
 CREATE TABLE Recebimento (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     status VARCHAR(20),
@@ -146,7 +146,7 @@ CREATE TABLE Recebimento (
     FOREIGN KEY (id_cai_fk) REFERENCES Caixa (id),
     FOREIGN KEY (id_alu_fk) REFERENCES Aluguel (id)
 );
-
+-- FALTA-----------------------
 CREATE TABLE Despesa (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     nome VARCHAR(100),
@@ -155,7 +155,7 @@ CREATE TABLE Despesa (
     parcelamento INT,
     descricao VARCHAR(300)
 );
-
+-- FALTA-----------------------
 CREATE TABLE Pagamento (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     status BOOL,

@@ -6,7 +6,7 @@ namespace Product_Rent.DataBase
     public class ConnectionMysql
     {
         private static readonly string host = "localhost";
-        private static readonly string port = "3360";
+        private static readonly string port = "3306";
         private static readonly string user = "root";
         private static readonly string password = "root";
         private static readonly string dbname = "Elegance_Rent";

@@ -524,9 +524,7 @@ BEGIN
     VALUES (p_nome, p_marca, p_tamanho, p_cor, p_valor_aluguel, p_descricao, p_id_for); 
 END $$ 
 DELIMITER ;
-	call insert_produto('produto', 'gucci', 'G', 'vermelho', 960.30, 'tanto faz', 1);
-
-
+	
 DELIMITER $$
 CREATE PROCEDURE select_Produto()
 BEGIN
@@ -546,9 +544,6 @@ FROM
 	WHERE (produto.id_for_fk = fornecedor.id);
 END $$ 
 DELIMITER ;
-
-call select_produto;
-
 
 DELIMITER $$
 CREATE PROCEDURE select_produto_id(IN id_pro INT)
@@ -570,8 +565,6 @@ FROM
     AND (produto.id = id_pro);
 END $$ 
 DELIMITER ;
-call select_produto_id(1);
-
 
 DELIMITER $$
 CREATE PROCEDURE update_produto(
@@ -669,8 +662,7 @@ BEGIN
    
 END $$
 DELIMITER ;
-select * from aluguel;
-call inative_aluguel(2);
+
 DELIMITER $$
 CREATE PROCEDURE inative_aluguel(
 	IN p_id int)
