@@ -8,6 +8,6 @@
         public double ValorTotal { get; set; }
         public int IdCliente { get; set; }
         public int IdFuncionario { get; set; }
-
+        public bool Status {  get; set; }
     }
 }

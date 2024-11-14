@@ -12,10 +12,11 @@ namespace Product_Rent.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] AluguelDTO item)
         {
-            var aluguel = new AluguelDAO().Insert(item);
-
             try
             {
+                var aluguel = new AluguelDAO().Insert(item);
+
+            
                 var cliente = new ClienteDAO().GetById(item.IdCliente);
                 var funcionario = new FuncionarioDAO().GetById(item.IdFuncionario);
                 if (cliente == null || funcionario == null)
@@ -26,12 +27,13 @@ namespace Product_Rent.Controllers
                 {
                     return BadRequest("Aluguel não pode ser vazio.");
                 }
+                return Ok(aluguel);
             }
             catch (Exception ex) 
             {
                 return BadRequest(ex.Message);
             }
-            return Ok(aluguel);
+            
         }
 
         [HttpGet]

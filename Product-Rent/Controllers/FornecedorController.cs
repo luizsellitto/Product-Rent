@@ -13,6 +13,7 @@ namespace Product_Rent.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] FornecedorDTO item)
         {
+            
             var fornecedor = new Fornecedor();
             fornecedor.CNPJ = item.CNPJ;
             fornecedor.RazaoSocial = item.RazaoSocial;
@@ -42,49 +43,77 @@ namespace Product_Rent.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            List<Fornecedor> fornecedores = new FornecedorDAO().GetAll();
-            return Ok(fornecedores);
+            try
+            {
+                List<Fornecedor> fornecedores = new FornecedorDAO().GetAll();
+                return Ok(fornecedores);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            Fornecedor fornecedor = new FornecedorDAO().GetById(id);
-
-            if (fornecedor == null)
+            try
             {
-                return NotFound();
+                Fornecedor fornecedor = new FornecedorDAO().GetById(id);
+
+                if (fornecedor == null)
+                {
+                    return NotFound();
+                }
+                return Ok(fornecedor);
             }
-            return Ok(fornecedor);
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] FornecedorDTO item)
         {
-            if (item == null)
+            try
             {
-                return BadRequest("Produto não pode ser vazio.");
-            }
+                if (item == null)
+                {
+                    return BadRequest("Produto não pode ser vazio.");
+                }
 
-           Fornecedor update = new FornecedorDAO().Update(id, item);
-            if(update == null)
-            {
-                return NotFound("Fornecedor não encontrado ou atualização falhou");
+                Fornecedor update = new FornecedorDAO().Update(id, item);
+                if (update == null)
+                {
+                    return NotFound("Fornecedor não encontrado ou atualização falhou");
+                }
+                return Ok(update);
             }
-            return Ok(update);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            Fornecedor fornecedor = new FornecedorDAO().GetById(id);
-            if (fornecedor == null || !fornecedor.Status)
+            try
             {
-                return BadRequest("O funcionário está inativo e não pode ser acessado.");
+                Fornecedor fornecedor = new FornecedorDAO().GetById(id);
+                if (fornecedor == null || !fornecedor.Status)
+                {
+                    return BadRequest("O funcionário está inativo e não pode ser acessado.");
 
+                }
+                fornecedor = new FornecedorDAO().Inative(id);
+
+                return NoContent();
             }
-            fornecedor = new FornecedorDAO().Inative(id);
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }

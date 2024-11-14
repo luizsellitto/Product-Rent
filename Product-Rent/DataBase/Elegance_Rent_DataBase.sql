@@ -70,6 +70,7 @@ CREATE TABLE Aluguel (
     valor_total DOUBLE,
     id_fun_fk INT,
     id_cli_fk INT,
+    status bool,
     FOREIGN KEY (id_fun_fk) REFERENCES Funcionario (id),
     FOREIGN KEY (id_cli_fk) REFERENCES Cliente (id)
 );

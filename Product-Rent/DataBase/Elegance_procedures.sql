@@ -375,9 +375,6 @@ FROM
 END $$ 
 DELIMITER ;
 
-select * from produto;
-
-drop PROCEDURE select_fornecedor;
 DELIMITER $$
 CREATE PROCEDURE select_fornecedor_id(
 	IN id_for INT
@@ -611,8 +608,8 @@ CREATE PROCEDURE insert_aluguel(
     IN p_id_cli_fk INT
 )
 BEGIN
-    INSERT INTO Aluguel (data_retirada, data_devolucao, valor_total, id_fun_fk, id_cli_fk)
-    VALUES (p_data_retirada, p_data_devolucao, p_valor_total, p_id_fun_fk, p_id_cli_fk); 
+    INSERT INTO Aluguel (data_retirada, data_devolucao, valor_total, id_fun_fk, id_cli_fk, status)
+    VALUES (p_data_retirada, p_data_devolucao, p_valor_total, p_id_fun_fk, p_id_cli_fk, true); 
 END $$ 
 DELIMITER ;
 
@@ -624,16 +621,13 @@ BEGIN
 	aluguel.data_retirada,
 	aluguel.data_devolucao,
 	aluguel.valor_total,
-	aluguel.id_cli_fk as 'ID cliente',
-    cliente.nome as 'Nome cliente',
-	aluguel.id_fun_fk as 'ID funcionário',
-    funcionario.nome as 'Nome funcionário'
-FROM 
-	aluguel INNER JOIN funcionario ON (aluguel.id_fun_fk = funcionario.id)
-    INNER JOIN cliente ON (aluguel.id_cli_fk = cliente.id);
+	aluguel.id_cli_fk,
+	aluguel.id_fun_fk,
+    aluguel.status
+	FROM aluguel WHERE (aluguel.status = true);
 END $$ 
 DELIMITER ;
-
+call select_aluguel();
 DELIMITER $$
 CREATE PROCEDURE select_aluguel_id(IN id_alu INT)
 BEGIN
@@ -642,15 +636,10 @@ BEGIN
 	aluguel.data_retirada,
 	aluguel.data_devolucao,
 	aluguel.valor_total,
-	aluguel.id_cli_fk as 'ID cliente',
-    cliente.nome as 'Nome cliente',
-	aluguel.id_fun_fk as 'ID funcionário',
-    funcionario.nome as 'Nome funcionário'
-
+	aluguel.id_cli_fk,
+	aluguel.id_fun_fk
 FROM 
-	aluguel INNER JOIN cliente ON (aluguel.id_cli_fk = cliente.id)
-    INNER JOIN funcionario ON (aluguel.id_fun_fk = funcionario.id)
-    AND (id_alu = aluguel.id);
+	aluguel WHERE (id_alu = aluguel.id) and (aluguel.status = true);
 END $$ 
 DELIMITER ;
 
@@ -665,7 +654,7 @@ BEGIN
     UPDATE aluguel
     SET
         data_retirada = p_data_retirada,
-        data_devoluca = p_data_devolucao,
+        data_devolucao = p_data_devolucao,
         valor_total = p_valor_total
     WHERE id = p_id;
    
