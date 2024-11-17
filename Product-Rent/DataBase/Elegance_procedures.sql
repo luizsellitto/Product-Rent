@@ -2,11 +2,11 @@
 use Elegance_Rent;
 
 DELIMITER $$
-CREATE PROCEDURE insert_address(
+CREATE PROCEDURE insert_endereco(
     IN p_id INT,
     IN p_cep VARCHAR(10),
     IN p_rua VARCHAR(100),
-    IN p_numero INT,
+    IN p_numero INT, 
     IN p_bairro VARCHAR(50),
     IN p_cidade VARCHAR(50),
     IN p_estado VARCHAR(2),
@@ -21,7 +21,7 @@ BEGIN
 END $$ 
 DELIMITER ;
 
-#####Cliente#####
+-- Cliente --
 DELIMITER $$
 CREATE PROCEDURE insert_cliente(
     IN p_nome VARCHAR(100),
@@ -50,7 +50,7 @@ BEGIN
 	ELSE
 		SET id = LAST_INSERT_ID();
 	END IF;
-    CALL insert_address (NULL, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, id, NULL, NULL);
+    CALL insert_endereco (NULL, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, id, NULL, NULL);
 END $$
 DELIMITER ;
 
@@ -193,7 +193,7 @@ BEGIN
 	ELSE
 		SET id = LAST_INSERT_ID();
 	END IF;
-    CALL insert_address (NULL, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, NULL, id, NULL);
+    CALL insert_endereco (NULL, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, NULL, id, NULL);
 END $$ 
 DELIMITER ;
 
@@ -341,7 +341,7 @@ BEGIN
 	ELSE
 		SET id = LAST_INSERT_ID();
      END IF;
-    CALL insert_address (NULL, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, NULL, NULL, id);
+    CALL insert_endereco (NULL, p_cep, p_rua, p_numero, p_bairro, p_cidade, p_estado, p_tipo_user, NULL, NULL, id);
 END $$ 
 DELIMITER ;
 
@@ -466,7 +466,8 @@ BEGIN
 END $$
 DELIMITER ;
 
-#####Caixa#####
+
+-- Caixa --
 DELIMITER $$
 CREATE PROCEDURE open_caixa(
     IN p_numero INT,
@@ -498,7 +499,6 @@ BEGIN
     WHERE (id = p_id) AND (status = 'Aberto');
 END $$
 DELIMITER ;
-
 
 DELIMITER $$
 CREATE PROCEDURE select_caixa_id(
@@ -598,6 +598,7 @@ BEGIN
 END $$
 DELIMITER ;
 
+
 -- ALUGUEL --
 DELIMITER $$
 CREATE PROCEDURE insert_aluguel(
@@ -627,7 +628,7 @@ BEGIN
 	FROM aluguel WHERE (aluguel.status = true);
 END $$ 
 DELIMITER ;
-call select_aluguel();
+
 DELIMITER $$
 CREATE PROCEDURE select_aluguel_id(IN id_alu INT)
 BEGIN
@@ -668,6 +669,7 @@ BEGIN
 	UPDATE aluguel SET status = false where (p_id = id);
 END;
 $$ DELIMITER ;
+
 
 -- COMPRA --
 DELIMITER $$
@@ -741,8 +743,8 @@ BEGIN
 END $$
 DELIMITER ;
 
--- DESPESA --
 
+-- Despesa --
 DELIMITER $$
 CREATE PROCEDURE insert_despesa(
     IN p_nome VARCHAR(100),
@@ -751,7 +753,6 @@ CREATE PROCEDURE insert_despesa(
     IN p_parcelamento INT,
     IN p_descricao VARCHAR(300)
 )
-
 BEGIN
     INSERT INTO Despesa (nome, data, vencimento, parcelamento, descricao, status)
     VALUES (p_nome, p_data, p_vencimento, p_parcelamento, p_descricao, true);
@@ -823,16 +824,8 @@ BEGIN
 END;
 $$ DELIMITER ;
 
-CALL insert_despesa(
-    'Aluguel',
-    '2024-11-01 10:00:00',
-    '2024-11-15',
-    3,
-    'Parcela do aluguel de novembro'
-);
 
--- RECEBIMENTO --
-
+-- Recebimento --
 DELIMITER $$
 CREATE PROCEDURE insert_recebimento(
     IN p_status VARCHAR(20),
@@ -918,20 +911,104 @@ END $$
 DELIMITER ;
 
 
+-- PAGAMENTO --
+DELIMITER $$ 
+CREATE PROCEDURE insert_pagamento(
+	IN p_status BOOL,
+    IN p_valor DOUBLE,
+    IN p_parcela INT,
+    IN p_data DATE,
+    IN p_forma VARCHAR(50),
+    IN p_id_cai_fk INT,
+    IN p_id_des_fk INT,
+    IN p_id_comp_fk INT
+)
+BEGIN
+	INSERT INTO Pagamento (status, valor, parcela, data, forma, id_cai_fk, id_des_fk, id_comp_fk)
+    VALUES (p_status, p_valor,p_parcela, p_data, p_forma, p_id_cai_fk, p_id_des_fk, p_id_comp_fk);
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE select_pagamento()
+BEGIN
+    SELECT
+    Pagamento.id,
+    Pagamento.status,
+    Pagamento.valor,
+    Pagamento.parcela,
+    Pagamento.data,
+    Pagamento.forma,
+    Pagamento.id_cai_fk,
+    Pagamento.id_des_fk,
+    Pagamento.id_comp_fk    
+FROM 
+	Pagamento;
+END $$ 
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE select_pagamento_id(
+	IN id_pag INT
+)
+BEGIN
+	SELECT
+    Pagamento.id,
+    Pagamento.status,
+    Pagamento.valor,
+    Pagamento.parcela,
+    Pagamento.data,
+    Pagamento.forma,
+    Pagamento.id_cai_fk,
+    Pagamento.id_des_fk,
+    Pagamento.id_comp_fk    
+FROM 
+	Pagamento
+	WHERE (Pagamento.id = id_pag);
+END $$ 
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE update_pagamento(
+	IN p_id INT,
+    IN p_status BOOL,
+    IN p_valor DOUBLE,
+    IN p_parcela INT,
+    IN p_data DATE,
+    IN p_forma VARCHAR(50),
+    IN p_id_cai_fk INT,
+    IN p_id_des_fk INT,
+    IN p_id_comp_fk INT
+)
+BEGIN
+    UPDATE Pagamento
+    SET
+        status = p_status,
+        valor = p_valor,
+        parcela = p_parcela,
+        data = p_data,
+        forma = p_forma,
+        id_cai_fk = p_id_cai_fk,
+        id_des_fk = p_id_des_fk,
+        id_comp_fk = p_id_comp_fk
+    WHERE id = p_id;
+END $$
+DELIMITER ;
 
 
-/*
-CALL insert_fornecedor('Razão Social Exemplo', 'Nome Fantasia Exemplo', '12.345.678/0001-90', '123456789', '987654321', 'Carlos Silva', '(11) 12345-6789', '(11) 98765-4321', '(11) 23456-7890', 'contato1@email.com', 'contato2@email.com', '12345-678', 'Rua Exemplo', 500, 'Centro', 'São Paulo', 'SP', 'Fornecedor');
-CALL insert_fornecedor('Razão Social Exemplo', 'Nome Fantasia Exemplo', '12.345.678/0001-90', '123456789', '987654321', 'Carlos Silva', '(11) 12345-6789', '(11) 98765-4321', '(11) 23456-7890', 'contato1@email.com', 'contato2@email.com', '12345-678', 'Rua Exemplo', 500, 'Centro', 'São Paulo', 'SP', 'Fornecedor');
-CALL insert_funcionario('João Silva', '1990-05-15', 'Masculino', '123456789', '123.456.789-00', '(11) 98765-4321', 'joao.silva@email.com', '123456789', 'Gerente', '12345-678', 'Rua Exemplo', 100, 'Centro', 'São Paulo', 'SP', 'Funcionário');
-CALL insert_funcionario('João Silva', '1990-05-15', 'Masculino', '123456789', '123.456.789-00', '(11) 98765-4321', 'joao.silva@email.com', '123456789', 'Gerente', '12345-678', 'Rua Exemplo', 100, 'Centro', 'São Paulo', 'SP', 'Funcionário');
-CALL insert_cliente('João Silva', '1990-05-15', 'Masculino', '123456789', '12345678000199', '12345678909', '(11) 98765-4321', 'joao.silva@email.com', '12345-678', 'Rua Exemplo', 123, 'Centro', 'São Paulo', 'SP', 'Cliente');
+## INSERTS PRONTOS
+CALL insert_cliente('Ana Souza', '1990-05-12', 'Feminino', '123456789', NULL, '98765432100', '99999-9999', 'ana@gmail.com', '12345-678', 'Rua das Flores', 101, 'Centro', 'São Paulo', 'SP', 'Cliente');
+CALL insert_cliente('Carlos Oliveira', '1985-03-25', 'Masculino', '987654321', NULL, '12345678900', '98888-8888', 'carlos@hotmail.com', '65432-111', 'Rua das Rosas', 222, 'Zona Sul', 'Porto Alegre', 'RS', 'Cliente');
+CALL insert_cliente('Maria Silva', '1992-08-19', 'Feminino', '567890123', NULL, '45678912300', '97777-7777', 'maria@gmail.com', '11111-222', 'Alameda dos Pássaros', 123, 'Centro', 'Salvador', 'BA', 'Cliente');
 
-CALL open_caixa(101, '2024-11-13', 500.00, 'Aberto', 1);
-CALL insert_aluguel('2024-11-13', '2024-11-20', 100.00, 1, 1);
+CALL insert_funcionario('João Pereira', '1980-01-15', 'Masculino', '321654987', '65498732100', '99999-9999', 'joao@empresa.com', '123456', 'Gerente', '55555-666', 'Rua Alegre', 45, 'Vila Nova', 'Campinas', 'SP', 'Funcionário');
+CALL insert_funcionario('Fernanda Lima', '1995-06-30', 'Feminino', '654321987', '98765432100', '98888-8888', 'fernanda@empresa.com', '987654', 'Assistente', '44444-333', 'Avenida Central', 78, 'Centro', 'Belo Horizonte', 'MG', 'Funcionário');
+CALL insert_funcionario('Lucas Martins', '1992-11-20', 'Masculino', '789456123', '12378945600', '97777-7777', 'lucas@empresa.com', '111111', 'Analista', '33333-444', 'Rua da Paz', 120, 'Zona Norte', 'Recife', 'PE', 'Funcionário');
 
-CALL insert_recebimento('Pago', 150.00, 1, '2024-11-13', 'Cartão de Crédito', '2024-12-13', 1, 1);
-CALL select_recebimento();
-CALL select_recebimento_id(1);
-CALL update_recebimento(1, 'Pendente', 200.00, 2, '2024-11-13', 'Boleto', '2024-12-20', 1, 1);
-*/
+CALL insert_fornecedor('Roupas & Cia LTDA', 'Roupas Cia', '12345678000101', '1234567890', '9876543210', 'Pedro Almeida', '99999-9999', '98888-8888', NULL, 'pedro@roupas.com', 'contato@roupas.com', '12345-678', 'Rua das Indústrias', 89, 'Distrito Industrial', 'Fortaleza', 'CE', 'Fornecedor');
+CALL insert_fornecedor('Estilo Moda SA', 'Estilo Moda', '98765432000101', '1122334455', '9988776655', 'Roberta Mendes', '97777-7777', NULL, NULL, 'roberta@estilomoda.com', NULL, '65432-111', 'Avenida Fashion', 50, 'Centro', 'Florianópolis', 'SC', 'Fornecedor');
+CALL insert_fornecedor('Tecidos e Cores ME', 'Tecidos e Cores', '45678912000101', '2233445566', '1122334455', 'André Santos', '96666-6666', '95555-5555', NULL, 'andre@tecidos.com', 'suporte@tecidos.com', '11111-222', 'Rua da Costura', 123, 'Vila Nova', 'Goiânia', 'GO', 'Fornecedor');
+
+CALL insert_produto('Vestido de Gala', 'Elegance', 'M', 'Vermelho', 250.00, 'Vestido longo ideal para eventos formais.', 1);
+CALL insert_produto('Terno Slim', 'Alfa Moda', 'G', 'Preto', 400.00, 'Terno slim fit com corte moderno.', 2);
+CALL insert_produto('Gravata Borboleta', 'Acessórios Lux', 'Único', 'Azul', 50.00, 'Gravata borboleta clássica.', 3);
