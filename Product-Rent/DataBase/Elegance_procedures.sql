@@ -163,7 +163,7 @@ END;
 $$ DELIMITER ;
 
 
-#####Funcionário#####
+-- Funcionário --
 DELIMITER $$
 CREATE PROCEDURE insert_funcionario(
     IN p_nome VARCHAR(100),
@@ -309,7 +309,8 @@ BEGIN
 END;
 $$ DELIMITER ;
 
-#####Fornecedor#####
+
+-- Fornecedor --
 DELIMITER $$ 
 CREATE PROCEDURE insert_fornecedor(
     IN p_razao_social VARCHAR(100),

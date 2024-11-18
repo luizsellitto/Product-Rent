@@ -10,33 +10,33 @@ namespace Product_Rent.Controllers
     public class ClienteController : ControllerBase
     {
         [HttpPost]
-        public IActionResult Create([FromBody] ClienteDTO clienteDto)
+        public IActionResult Create([FromBody] ClienteDTO item)
         {
             try
             {
-                if (clienteDto == null)
+                if (item == null)
                 {
                     return BadRequest("Cliente não pode ser vazio.");
                 }
 
-                if (clienteDto.CNPJ != "")
+                if (item.CNPJ != "")
                 {
-                    if ((ValidarCNPJ.ValidaCnpj(clienteDto.CNPJ) == false))
+                    if ((ValidarCNPJ.ValidaCnpj(item.CNPJ) == false))
                     {
                         return BadRequest("CNPJ inválido.");
                     }
                 }
 
 
-                if (clienteDto.CPF != "")
+                if (item.CPF != "")
                 {
-                    if (ValidarCPF.ValidaCPF(clienteDto.CPF) == false)
+                    if (ValidarCPF.ValidaCPF(item.CPF) == false)
                     {
                         return BadRequest("CPF inválido.");
                     }
                 }
 
-                var cliente = new ClienteDAO().Insert(clienteDto);
+                var cliente = new ClienteDAO().Insert(item);
                 return Ok(cliente);
             }
             catch (Exception ex)
